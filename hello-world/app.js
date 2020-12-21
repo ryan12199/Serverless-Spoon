@@ -1,5 +1,6 @@
 // const axios = require('axios')
 // const url = 'http://checkip.amazonaws.com/';
+const AWS = require('aws-sdk');
 let response;
 
 /**
@@ -15,12 +16,32 @@ let response;
  * 
  */
 exports.lambdaHandler = async (event, context) => {
+
+    const documentClient = new AWS.DynamoDB.DocumentClient();
+      
+
+      var params = {
+        TableName: "Users",
+        Key:{
+            "id": "eitan123",
+        }
+        };
+    
+        console.log("MEET MEEP");
+        var retVal; 
+        const findUserData = await documentClient.get(params).promise();
+    console.log("var is");
+    console.log(findUserData);
+    retVal = findUserData;
+                    
     try {
         // const ret = await axios(url);
         response = {
             'statusCode': 200,
             'body': JSON.stringify({
                 message: 'hello Eitan',
+                test : "123",
+                data : retVal
                 // location: ret.data.trim()
             })
         }
