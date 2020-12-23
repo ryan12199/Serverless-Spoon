@@ -19,18 +19,18 @@ exports.lambdaHandler = async (event, context) => {
 
     const documentClient = new AWS.DynamoDB.DocumentClient();
       
+    let body = JSON.parse(event.body)
 
       var params = {
         TableName: "Users",
         Item: {
-            id : "test2", 
-            password : "test2",
+            id : body["id"], 
+            password : body["password"],
             recipes : [],
             inventory : []
         }
         };
     
-        console.log("MEET MEEP");
         var retVal; 
         const insertUserData = await documentClient.put(params).promise();
         console.log("var is");
@@ -43,9 +43,7 @@ exports.lambdaHandler = async (event, context) => {
             'statusCode': 200,
             'body': JSON.stringify({
                 message: 'hello Eitan',
-                test : "123",
-                data : retVal
-                // location: ret.data.trim()
+                ret : retVal
             })
         }
     } catch (err) {
