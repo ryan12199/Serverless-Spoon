@@ -42,7 +42,8 @@ exports.lambdaHandler = async (event, context) => {
         };
      const insertUserData = await documentClient.put(insertUserParams).promise();
      console.log(insertUserData);
-     const response = {
+     var response;
+     response = {
         body : body["id"],
         statusCode: 200
       };
@@ -50,19 +51,20 @@ exports.lambdaHandler = async (event, context) => {
     }
     else{
      console.log("user data : " + findUserData);
-     return({
-         statusCode : 500,
-         status : "Please try a different username",
-         body: null
-     });
+     response = {
+        body : "Please choose a different username",
+        statusCode: 500,
+      };
+      return response;
     }
    }
     catch (e) {
-      console.log(e);
-      return {
-        statusCode: 500,
-        body: JSON.stringify(e)
-      };
+        response = {
+            body : "error",
+            statusCode: 500,
+            message :JSON.stringify(e)
+          };
+          return response;
     }
 };
 
