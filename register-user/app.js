@@ -22,17 +22,20 @@ exports.lambdaHandler = async (event, context) => {
 
       var params = {
         TableName: "Users",
-        Key:{
-            "id": "eitan123",
+        Item: {
+            id : "test2", 
+            password : "test2",
+            recipes : [],
+            inventory : []
         }
         };
     
         console.log("MEET MEEP");
         var retVal; 
-        const findUserData = await documentClient.get(params).promise();
-    console.log("var is");
-    console.log(findUserData);
-    retVal = findUserData;
+        const insertUserData = await documentClient.put(params).promise();
+        console.log("var is");
+    console.log(insertUserData);
+    retVal = insertUserData;
                     
     try {
         // const ret = await axios(url);
