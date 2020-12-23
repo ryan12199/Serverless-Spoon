@@ -17,11 +17,21 @@ let response;
  */
 exports.lambdaHandler = async (event, context) => {
 
-    const documentClient = new AWS.DynamoDB.DocumentClient();
-      
     let body = JSON.parse(event.body)
+    const documentClient = new AWS.DynamoDB.DocumentClient();
 
-      var params = {
+
+    var findUserParams = {
+        TableName: 'Users',
+        Key:{
+          "id": body["id"]
+        }
+    };
+   try {
+     // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
+     const findUserData = await documentClient.get(findUserParams).promise();
+     if(Object.keys(findUserData).length === 0){
+     const insertUserParams = {
         TableName: "Users",
         Item: {
             id : body["id"], 
@@ -30,26 +40,69 @@ exports.lambdaHandler = async (event, context) => {
             inventory : []
         }
         };
-    
-        var retVal; 
-        const insertUserData = await documentClient.put(params).promise();
-        console.log("var is");
-    console.log(insertUserData);
-    retVal = insertUserData;
-                    
-    try {
-        // const ret = await axios(url);
-        response = {
-            'statusCode': 200,
-            'body': JSON.stringify({
-                message: 'hello Eitan',
-                ret : retVal
-            })
-        }
-    } catch (err) {
-        console.log(err);
-        return err;
+     const insertUserData = await documentClient.put(insertUserParams).promise();
+     console.log(insertUserData);
+     const response = {
+        body : body["id"],
+        statusCode: 200
+      };
+      return response; // Returning a 200 if the item has been inserted 
     }
-
-    return response
+    else{
+     console.log("user data : " + findUserData);
+     return({
+         statusCode : 500,
+         status : "Please try a different username",
+         body: null
+     });
+    }
+   }
+    catch (e) {
+      console.log(e);
+      return {
+        statusCode: 500,
+        body: JSON.stringify(e)
+      };
+    }
 };
+
+
+
+
+
+    // const documentClient = new AWS.DynamoDB.DocumentClient();
+      
+    // let body = JSON.parse(event.body)
+
+    //   var params = {
+    //     TableName: "Users",
+    //     Item: {
+    //         id : body["id"], 
+    //         password : body["password"],
+    //         recipes : [],
+    //         inventory : []
+    //     }
+    //     };
+    
+    //     var retVal; 
+    //     const insertUserData = await documentClient.put(params).promise();
+    //     console.log("var is");
+    // console.log(insertUserData);
+    // retVal = insertUserData;
+                    
+    // try {
+    //     // const ret = await axios(url);
+    //     response = {
+    //         'statusCode': 200,
+    //         'body': JSON.stringify({
+    //             message: 'hello Eitan',
+    //             ret : retVal
+    //         })
+    //     }
+    // } catch (err) {
+    //     console.log(err);
+    //     return err;
+    // }
+
+    // return response
+// };
