@@ -60,51 +60,10 @@ exports.lambdaHandler = async (event, context) => {
    }
     catch (e) {
         response = {
-            body : "error",
             statusCode: 500,
-            message :JSON.stringify(e)
+            body :JSON.stringify(e)
           };
           return response;
     }
 };
 
-
-
-
-
-    // const documentClient = new AWS.DynamoDB.DocumentClient();
-      
-    // let body = JSON.parse(event.body)
-
-    //   var params = {
-    //     TableName: "Users",
-    //     Item: {
-    //         id : body["id"], 
-    //         password : body["password"],
-    //         recipes : [],
-    //         inventory : []
-    //     }
-    //     };
-    
-    //     var retVal; 
-    //     const insertUserData = await documentClient.put(params).promise();
-    //     console.log("var is");
-    // console.log(insertUserData);
-    // retVal = insertUserData;
-                    
-    // try {
-    //     // const ret = await axios(url);
-    //     response = {
-    //         'statusCode': 200,
-    //         'body': JSON.stringify({
-    //             message: 'hello Eitan',
-    //             ret : retVal
-    //         })
-    //     }
-    // } catch (err) {
-    //     console.log(err);
-    //     return err;
-    // }
-
-    // return response
-// };

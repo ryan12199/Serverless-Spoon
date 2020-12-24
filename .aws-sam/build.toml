@@ -8,4 +8,11 @@ source_md5 = ""
 packagetype = "Zip"
 functions = ["HelloWorldFunction"]
 
+[function_build_definitions.7e42e73c-c682-4928-838d-ca8c58b52f3d]
+codeuri = "add-items/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["AddItemsFunction"]
+
 [layer_build_definitions]
