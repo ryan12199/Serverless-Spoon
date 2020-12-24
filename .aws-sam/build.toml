@@ -15,4 +15,11 @@ source_md5 = ""
 packagetype = "Zip"
 functions = ["AddItemsFunction"]
 
+[function_build_definitions.5597b233-bb04-47a9-98bc-a01eee1ddc9b]
+codeuri = "remove-items/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["RemoveItemsFunction"]
+
 [layer_build_definitions]

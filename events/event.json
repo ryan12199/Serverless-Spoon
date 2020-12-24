@@ -1,5 +1,5 @@
 {
-  "body": "{\"password\" : \"pass\", \"id\" : \"testuser\", \"items\" : [\"kiwi\", \"banana\", \"eggs\"]}",
+  "body": "{\"password\" : \"pass\", \"id\" : \"test2\", \"items\" : [\"soy\", \"eggs\"]}",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
   "httpMethod": "POST",
