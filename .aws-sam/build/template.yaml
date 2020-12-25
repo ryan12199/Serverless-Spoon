@@ -69,6 +69,42 @@ Resources:
           Properties:
             Path: /removeRecipes
             Method: post
+  SearchRecipeWithQueryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: SearchRecipeWithQueryFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /searchRecipeWithQuery
+            Method: post
+  SearchRecipeWithItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: SearchRecipeWithItemsFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /searchRecipeWithItems
+            Method: post
+  SearchRecipeWithInventoryFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: SearchRecipeWithInventoryFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /searchRecipeWithInventory
+            Method: post
 Outputs:
   HelloWorldApi:
     Description: API Gateway endpoint URL for Prod stage for Hello World function

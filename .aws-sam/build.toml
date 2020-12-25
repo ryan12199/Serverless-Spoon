@@ -36,4 +36,25 @@ source_md5 = ""
 packagetype = "Zip"
 functions = ["RemoveRecipesFunction"]
 
+[function_build_definitions.d8751dc9-15ef-404e-9c4f-cc3906243bc2]
+codeuri = "recipe-with-query/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["SearchRecipeWithQueryFunction"]
+
+[function_build_definitions.1c03e2ad-1dda-418d-99f5-9b1942c586b2]
+codeuri = "recipe-with-items/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["SearchRecipeWithItemsFunction"]
+
+[function_build_definitions.82e436d7-72ee-4e10-810e-6912ffe95547]
+codeuri = "recipe-with-inventory/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["SearchRecipeWithInventoryFunction"]
+
 [layer_build_definitions]
