@@ -105,6 +105,30 @@ Resources:
           Properties:
             Path: /searchRecipeWithInventory
             Method: post
+  GetRecipesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetRecipesFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /getRecipes
+            Method: get
+  GetItemsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetItemsFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /getItems
+            Method: get
 Outputs:
   HelloWorldApi:
     Description: API Gateway endpoint URL for Prod stage for Hello World function

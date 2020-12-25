@@ -57,4 +57,18 @@ source_md5 = ""
 packagetype = "Zip"
 functions = ["SearchRecipeWithInventoryFunction"]
 
+[function_build_definitions.67f37bed-8c58-4094-9d3d-ae5db0bcf350]
+codeuri = "get-recipes/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["GetRecipesFunction"]
+
+[function_build_definitions.fc079fd3-0535-4f96-8965-50ef7825469f]
+codeuri = "get-items/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["GetItemsFunction"]
+
 [layer_build_definitions]
