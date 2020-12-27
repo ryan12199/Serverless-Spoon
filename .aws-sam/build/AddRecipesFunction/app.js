@@ -29,43 +29,43 @@ exports.lambdaHandler = async (event, context) => {
     ProjectionExpression: "recipes"
   };
 
-  // try {
+  try {
     // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
     const getRecipesData = await documentClient.get(getRecipes).promise();
     var recipesList = Object.values(getRecipesData["Item"]["recipes"]);
     console.log(recipesList);
     var toAdd = body["recipes"];
     console.log(toAdd);
-    for(var i=0; i<toAdd.length; i++){
+    for (var i = 0; i < toAdd.length; i++) {
       var recipe = toAdd[i];
-      if(recipesList.includes(recipe)){
-        continue; 
+      if (recipesList.includes(recipe)) {
+        continue;
       }
-      else{
+      else {
         recipesList.push(recipe);
       }
     }
-    updateRecipes = getRecipes; 
-    updateRecipes['UpdateExpression'] =  "SET recipes = :array";
+    updateRecipes = getRecipes;
+    updateRecipes['UpdateExpression'] = "SET recipes = :array";
     updateRecipes['ExpressionAttributeValues'] = {
       ':array': recipesList,
     };
     const update = await documentClient.update(updateRecipes).promise();
 
     var response = {
-      body: JSON.stringify({"RecipeList" : recipesList}),
+      body: JSON.stringify({ "RecipeList": recipesList }),
       statusCode: 200
     };
     return response; // Returning a 200 if the item has been inserted
-  };
-  // catch (e) {
-  //   let response = {
-  //     statusCode: 500,
-  //     body: JSON.stringify(e)
-  //   };
-  //   return response;
-  // }
+  }
+  catch (e) {
+    let response = {
+      statusCode: 500,
+      body: JSON.stringify(e)
+    };
+    return response;
+  }
 
-// };
+};
 
 

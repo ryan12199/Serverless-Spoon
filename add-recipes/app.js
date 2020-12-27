@@ -36,24 +36,24 @@ exports.lambdaHandler = async (event, context) => {
     console.log(recipesList);
     var toAdd = body["recipes"];
     console.log(toAdd);
-    for(var i=0; i<toAdd.length; i++){
+    for (var i = 0; i < toAdd.length; i++) {
       var recipe = toAdd[i];
-      if(recipesList.includes(recipe)){
-        continue; 
+      if (recipesList.includes(recipe)) {
+        continue;
       }
-      else{
+      else {
         recipesList.push(recipe);
       }
     }
-    updateRecipes = getRecipes; 
-    updateRecipes['UpdateExpression'] =  "SET recipes = :array";
+    updateRecipes = getRecipes;
+    updateRecipes['UpdateExpression'] = "SET recipes = :array";
     updateRecipes['ExpressionAttributeValues'] = {
       ':array': recipesList,
     };
     const update = await documentClient.update(updateRecipes).promise();
 
     var response = {
-      body: JSON.stringify({"RecipeList" : recipesList}),
+      body: JSON.stringify({ "RecipeList": recipesList }),
       statusCode: 200
     };
     return response; // Returning a 200 if the item has been inserted

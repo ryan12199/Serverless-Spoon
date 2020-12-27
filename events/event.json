@@ -1,11 +1,11 @@
 {
-  "body": "{\"password\" : \"pass\", \"id\" : \"test2\", \"items\" : [\"soy\", \"eggs\"]}",
+  "body": "",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
-  "httpMethod": "POST",
+  "httpMethod": "GET",
   "isBase64Encoded": false,
   "queryStringParameters": {
-    "foo": "bar"
+    "id": "mac2"
   },
   "pathParameters": {
     "proxy": "/path/to/resource"

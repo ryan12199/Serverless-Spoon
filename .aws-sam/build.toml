@@ -71,4 +71,18 @@ source_md5 = ""
 packagetype = "Zip"
 functions = ["GetItemsFunction"]
 
+[function_build_definitions.ea560063-4e2b-4d00-96c1-fda54a9010a9]
+codeuri = "get-macros/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["GetMacrosFunction"]
+
+[function_build_definitions.09c04bed-e55d-42c4-8cec-bebbdfd83718]
+codeuri = "add-macros/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["AddMacrosFunction"]
+
 [layer_build_definitions]
