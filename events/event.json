@@ -1,11 +1,11 @@
 {
-  "body": "",
+  "body": "{\"recipeId\" : 716429}",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
   "httpMethod": "GET",
   "isBase64Encoded": false,
   "queryStringParameters": {
-    "id": "mac2"
+    "includeNutrition": true
   },
   "pathParameters": {
     "proxy": "/path/to/resource"

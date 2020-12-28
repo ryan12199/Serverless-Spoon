@@ -21,6 +21,18 @@ Resources:
           Properties:
             Path: /register
             Method: post
+  CreateUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: CreateUserFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /createUser
+            Method: post
   AddItemsFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -152,6 +164,18 @@ Resources:
           Type: Api
           Properties:
             Path: /addMacros
+            Method: post
+  ChooseRecipeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ChooseRecipeFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /chooseRecipe
             Method: post
 Outputs:
   HelloWorldApi:
