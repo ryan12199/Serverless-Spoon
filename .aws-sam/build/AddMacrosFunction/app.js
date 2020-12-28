@@ -50,7 +50,7 @@ exports.lambdaHandler = async (event, context) => {
         "protein": newProt,
         "fat": newFat,
         "carbs": newCarbs,
-        "date": new Date().toJSON()
+        "date": lastDate
       }
     }
     else {

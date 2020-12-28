@@ -51,7 +51,7 @@ try {
   
   return {
     statusCode: 200,
-    body: dataString
+    body: JSON.stringify({"recipes" : dataString})
   };;
 
 

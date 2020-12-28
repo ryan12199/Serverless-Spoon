@@ -52,7 +52,7 @@ exports.lambdaHandler = async (event, context) => {
     const update = await documentClient.update(updateInventory).promise();
 
     var response = {
-      body: JSON.stringify({"updatedInventory" : newInventory}),
+      body: JSON.stringify({"inventory" : newInventory}),
       statusCode: 200
     };
     return response; // Returning a 200 if the item has been inserted

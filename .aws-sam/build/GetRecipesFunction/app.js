@@ -29,46 +29,47 @@ exports.lambdaHandler = async (event, context) => {
     },
     ProjectionExpression: "recipes"
   };
-  
-    try {
-  const getRecipesData = await documentClient.get(getRecipes).promise();
-  var recipes = Object.values(getRecipesData["Item"]["recipes"]);
-  console.log(recipes);
-  var recipeString = recipes.toString();
-  console.log(recipeString);
-  const response = await new Promise((resolve, reject) => {
-    var url = "https://api.spoonacular.com/recipes/informationBulk?" + querystring.stringify({
-      "apiKey" : "d41161c9f9e8416cb1f41f655ea69192",
-      "ids" : recipeString,
-      "includeNutrition" : false
-        });
-    const req = https.get(url, function(res) {
-      res.on('data', chunk => {
-        dataString += chunk;
+
+  try {
+    const getRecipesData = await documentClient.get(getRecipes).promise();
+    var recipes = Object.values(getRecipesData["Item"]["recipes"]);
+    console.log(recipes);
+    var recipeString = recipes.toString();
+    console.log(recipeString);
+    const response = await new Promise((resolve, reject) => {
+      var url = "https://api.spoonacular.com/recipes/informationBulk?" + querystring.stringify({
+        "apiKey": "d41161c9f9e8416cb1f41f655ea69192",
+        "ids": recipeString,
+        "includeNutrition": false
       });
-      res.on('end', () => {
-        resolve({
+      const req = https.get(url, function (res) {
+        res.on('data', chunk => {
+          dataString += chunk;
+        });
+        res.on('end', () => {
+          resolve({
             statusCode: 200,
             body: JSON.parse(dataString)
+          });
+        });
+      });
+
+      req.on('error', (e) => {
+        reject({
+          statusCode: 500,
+          body: 'Something went wrong!'
         });
       });
     });
-    
-    req.on('error', (e) => {
-      reject({
-          statusCode: 500,
-          body: 'Something went wrong!'
-      });
-    });
-});
-  return {
-    statusCode: 200,
-    body: dataString
-  };
-}
-catch(e){
-  return{
-    statusCode: 500,
-    body: JSON.stringify(e)
-  }}
+    return {
+      statusCode: 200,
+      body: JSON.stringify({"savedRecipes" : dataString})
+    };
+  }
+  catch (e) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify(e)
+    }
+  }
 };

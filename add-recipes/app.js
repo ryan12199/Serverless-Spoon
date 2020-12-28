@@ -34,7 +34,7 @@ exports.lambdaHandler = async (event, context) => {
     const getRecipesData = await documentClient.get(getRecipes).promise();
     var recipesList = Object.values(getRecipesData["Item"]["recipes"]);
     console.log(recipesList);
-    var toAdd = body["recipes"];
+    var toAdd = body["recipeIds"];
     console.log(toAdd);
     for (var i = 0; i < toAdd.length; i++) {
       var recipe = toAdd[i];
@@ -53,7 +53,7 @@ exports.lambdaHandler = async (event, context) => {
     const update = await documentClient.update(updateRecipes).promise();
 
     var response = {
-      body: JSON.stringify({ "RecipeList": recipesList }),
+      body: JSON.stringify({ "savedRecipes": recipesList }),
       statusCode: 200
     };
     return response; // Returning a 200 if the item has been inserted

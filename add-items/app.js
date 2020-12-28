@@ -33,29 +33,29 @@ exports.lambdaHandler = async (event, context) => {
     // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
     const getInventoryData = await documentClient.get(getInventory).promise();
     var inventory = Object.values(getInventoryData["Item"]["inventory"]);
-    console.log(typeof(inventory));
+    console.log(typeof (inventory));
     console.log(inventory);
     var toAdd = body["items"];
     console.log(toAdd);
     var item;
-    for(var i=0; i<toAdd.length; i++){
+    for (var i = 0; i < toAdd.length; i++) {
       var item = toAdd[i].toLowerCase();
-      if(inventory.includes(item)){
-        continue; 
+      if (inventory.includes(item)) {
+        continue;
       }
-      else{
+      else {
         inventory.push(item);
       }
     }
-    updateInventory = getInventory; 
-    updateInventory['UpdateExpression'] =  "SET inventory = :array";
+    updateInventory = getInventory;
+    updateInventory['UpdateExpression'] = "SET inventory = :array";
     updateInventory['ExpressionAttributeValues'] = {
       ':array': inventory,
     };
     const update = await documentClient.update(updateInventory).promise();
 
     var response = {
-      body: JSON.stringify({"updatedInventory" : inventory}),
+      body: JSON.stringify({ "inventory": inventory }),
       statusCode: 200
     };
     return response; // Returning a 200 if the item has been inserted

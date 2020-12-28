@@ -39,7 +39,7 @@ exports.lambdaHandler = async (event, context) => {
       res.on('end', () => {
         resolve({
           statusCode: 200,
-          body: dataString
+          body: JSON.stringify({"recipes" : dataString})
         });
       });
     });

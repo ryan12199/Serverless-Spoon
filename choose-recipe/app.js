@@ -116,7 +116,7 @@ exports.lambdaHandler = async (event, context) => {
     const update = await documentClient.update(updateMacros).promise();
 
     var response = {
-      body: JSON.stringify({ "ingridients": ingridients, "nutrition" : nutrientsResponse, "missingIngridients" : missingInventoryItems, "instructions" : recipeJSON["instructions"], "analyzedInstructions" : recipeJSON["analyzedInstructions"]}),
+      body: JSON.stringify({ "ingridients": ingridients, "nutrition" : macros, "missingIngridients" : missingInventoryItems, "instructions" : recipeJSON["instructions"], "analyzedInstructions" : recipeJSON["analyzedInstructions"]}),
       statusCode: 200
     };
     return response;
