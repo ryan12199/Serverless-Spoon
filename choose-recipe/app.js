@@ -3,9 +3,6 @@
 const AWS = require('aws-sdk');
 const https = require('https');
 const querystring = require('querystring');
-
-let response;
-
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -25,8 +22,23 @@ const datesAreOnSameDay = (first, second) =>
 
 exports.lambdaHandler = async (event, context) => {
   let body = JSON.parse(event.body);
+  var errorMessage = null;
+  if (!body.hasOwnProperty("recipeId")) {
+    errorMessage = "Parameter \'recipeIds\' is missing in the request body";
+  }
+  if (!body.hasOwnProperty("id")) {
+    errorMessage = "Parameter \'id\' is missing in the request body";
+  }
+  if (errorMessage) {
+    var response = {
+      statusCode: 509,
+      body: errorMessage
+    };
+    return response;
+  }
+  
+  
   const recipeId = body["recipeId"];
-
   let dataString = '';
   const APIresponse = await new Promise((resolve, reject) => {
     var url = `https://api.spoonacular.com/recipes/${recipeId}/information?` + querystring.stringify({
@@ -87,6 +99,13 @@ exports.lambdaHandler = async (event, context) => {
 
   try {
     const userData = await documentClient.get(userParams).promise();
+    if(!userData.hasOwnProperty(["Item"])){
+      var response = {
+        statusCode: 509,
+        body: `user \'${body["id"]}\' not found`
+      };
+      return response;
+    }
     var macros = userData["Item"]["macros"];
     var today = new Date();
     var lastDate = new Date(macros["date"]);
@@ -116,7 +135,7 @@ exports.lambdaHandler = async (event, context) => {
     const update = await documentClient.update(updateMacros).promise();
 
     var response = {
-      body: JSON.stringify({ "ingridients": ingridients, "nutrition" : macros, "missingIngridients" : missingInventoryItems, "instructions" : recipeJSON["instructions"], "analyzedInstructions" : recipeJSON["analyzedInstructions"]}),
+      body: JSON.stringify({ "ingridients": ingridients, "macros" : nutrientsResponse, "missingIngridients" : missingInventoryItems, "instructions" : recipeJSON["instructions"], "analyzedInstructions" : recipeJSON["analyzedInstructions"]}),
       statusCode: 200
     };
     return response;

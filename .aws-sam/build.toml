@@ -85,18 +85,18 @@ source_md5 = ""
 packagetype = "Zip"
 functions = ["CreateUserFunction"]
 
-[function_build_definitions.06b0593c-4b3b-4892-a65f-4dbbc27afa85]
-codeuri = "register-user/"
-runtime = "nodejs12.x"
-source_md5 = ""
-packagetype = "Zip"
-functions = ["HelloWorldFunction"]
-
 [function_build_definitions.e7eb2b4d-cf9e-4bb4-91b3-bb4d98e52fe0]
 codeuri = "choose-recipe/"
 runtime = "nodejs12.x"
 source_md5 = ""
 packagetype = "Zip"
 functions = ["ChooseRecipeFunction"]
+
+[function_build_definitions.52b3d1d9-089d-4a52-b9a8-327a4b2e4b36]
+codeuri = "get-user/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["GetUserFunction"]
 
 [layer_build_definitions]

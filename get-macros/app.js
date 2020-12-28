@@ -34,14 +34,17 @@ exports.lambdaHandler = async (event, context) => {
 
   try {
     const getMacrosData = await documentClient.get(getMacros).promise();
+    if(!getMacrosData.hasOwnProperty(["Item"])){
+      var response = {
+        statusCode: 509,
+        body: `user \'${body["id"]}\' not found`
+      };
+      return response;
+    }
     var macros = getMacrosData["Item"]["macros"];
     var today = new Date(); 
     var lastDate = new Date(macros["date"]);
-    console.log(today);
-    console.log(macros);
-    console.log(macros["date"]);
-    console.log(typeof(macros["date"]));
-    console.log(lastDate);
+   
     
     if(datesAreOnSameDay(today, lastDate)){
       var response = {

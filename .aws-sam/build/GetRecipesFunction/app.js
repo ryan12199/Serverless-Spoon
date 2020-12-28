@@ -32,6 +32,13 @@ exports.lambdaHandler = async (event, context) => {
 
   try {
     const getRecipesData = await documentClient.get(getRecipes).promise();
+    if(!getRecipesData.hasOwnProperty(["Item"])){
+      var response = {
+        statusCode: 509,
+        body: `user \'${body["id"]}\' not found`
+      };
+      return response;
+    }
     var recipes = Object.values(getRecipesData["Item"]["recipes"]);
     console.log(recipes);
     var recipeString = recipes.toString();

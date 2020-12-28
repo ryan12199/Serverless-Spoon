@@ -1,7 +1,6 @@
 // const axios = require('axios')
 // const url = 'http://checkip.amazonaws.com/';
 const AWS = require('aws-sdk');
-let response;
 
 /**
  *
@@ -17,10 +16,24 @@ let response;
  */
 exports.lambdaHandler = async (event, context) => {
 
-  let body = JSON.parse(event.body)
+  let body = JSON.parse(event.body);
+  var errorMessage = null;
+  if (!body.hasOwnProperty("recipeIds")) {
+    errorMessage = "Parameter \'recipeIds\' is missing in the request body";
+  }
+  if (!body.hasOwnProperty("id")) {
+    errorMessage = "Parameter \'id\' is missing in the request body";
+  }
+  if (errorMessage) {
+    var response = {
+      statusCode: 509,
+      body: errorMessage
+    };
+    return response;
+  }
+
 
   const documentClient = new AWS.DynamoDB.DocumentClient();
-
   var getRecipes = {
     TableName: 'Users',
     Key: {
@@ -30,8 +43,14 @@ exports.lambdaHandler = async (event, context) => {
   };
 
   try {
-    // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
     const getRecipesData = await documentClient.get(getRecipes).promise();
+    if(!getRecipesData.hasOwnProperty(["Item"])){
+      var response = {
+        statusCode: 509,
+        body: `user \'${body["id"]}\' not found`
+      };
+      return response;
+    }
     var recipesList = Object.values(getRecipesData["Item"]["recipes"]);
     console.log(recipesList);
     var toAdd = body["recipeIds"];

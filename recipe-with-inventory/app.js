@@ -4,8 +4,6 @@ const AWS = require('aws-sdk');
 const https = require('https');
 const querystring = require('querystring');
 
-let response;
-
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -20,6 +18,21 @@ let response;
  */
 exports.lambdaHandler = async (event, context) => {
   let body = JSON.parse(event.body);
+  var errorMessage = null;
+  if (!body.hasOwnProperty("id")) {
+    errorMessage = "Parameter \'id\' is missing in the request body";
+  }
+  if (errorMessage) {
+    var response = {
+      statusCode: 509,
+      body: errorMessage
+    };
+    return response;
+  }
+
+
+
+
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
   var params = {
@@ -31,6 +44,13 @@ exports.lambdaHandler = async (event, context) => {
   try {
     // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
     const getInventoryData = await documentClient.get(params).promise();
+    if(!getInventoryData.hasOwnProperty(["Item"])){
+      var response = {
+        statusCode: 509,
+        body: `user \'${body["id"]}\' not found`
+      };
+      return response;
+    }
     var inventory = Object.values(getInventoryData["Item"]["inventory"]);
 
     let dataString = '';

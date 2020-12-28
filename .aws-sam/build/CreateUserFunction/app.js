@@ -18,9 +18,25 @@ let response;
 exports.lambdaHandler = async (event, context) => {
 
   let body = JSON.parse(event.body)
+  var errorMessage = null;
+  if (!body.hasOwnProperty("id")) {
+    errorMessage = "Parameter \'id\' is missing in the request body";
+  }
+  if (!body.hasOwnProperty("firstName")) {
+    errorMessage = "Parameter \'firstName\' is missing in the request body";
+  }
+  if (!body.hasOwnProperty("lastName")) {
+    errorMessage = "Parameter \'lastName\' is missing in the request body";
+  }
+  if (errorMessage) {
+    var response = {
+      statusCode: 509,
+      body: errorMessage
+    };
+    return response;
+  }
+
   const documentClient = new AWS.DynamoDB.DocumentClient();
-
-
   var findUserParams = {
     TableName: 'Users',
     Key: {
@@ -42,10 +58,11 @@ exports.lambdaHandler = async (event, context) => {
         TableName: "Users",
         Item: {
           id: body["id"],
-          password: "firebase",
           recipes: [],
           inventory: [],
-          macros: macrosJSON
+          macros: macrosJSON,
+          firstName: body["firstName"],
+          lastName: body["lastName"]
         }
       };
       const insertUserData = await documentClient.put(insertUserParams).promise();

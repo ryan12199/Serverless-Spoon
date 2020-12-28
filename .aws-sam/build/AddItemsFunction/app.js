@@ -1,7 +1,6 @@
 // const axios = require('axios')
 // const url = 'http://checkip.amazonaws.com/';
 const AWS = require('aws-sdk');
-let response;
 
 /**
  *
@@ -29,14 +28,34 @@ exports.lambdaHandler = async (event, context) => {
     ProjectionExpression: "inventory"
   };
 
+  var errorMessage = null;
+  if (!body.hasOwnProperty("items")) {
+    errorMessage = "Parameter \'items\' is missing in the request body";
+  }
+  if (!body.hasOwnProperty("id")) {
+    errorMessage = "Parameter \'id\' is missing in the request body";
+  }
+  if (errorMessage) {
+    var response = {
+      statusCode: 509,
+      body: errorMessage
+    };
+    return response;
+  }
   try {
-    // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
     const getInventoryData = await documentClient.get(getInventory).promise();
+    if(!getInventoryData.hasOwnProperty(["Item"])){
+      var response = {
+        statusCode: 509,
+        body: `user \'${body["id"]}\' not found`
+      };
+      return response;
+    }
+    
     var inventory = Object.values(getInventoryData["Item"]["inventory"]);
-    console.log(typeof (inventory));
-    console.log(inventory);
+
+
     var toAdd = body["items"];
-    console.log(toAdd);
     var item;
     for (var i = 0; i < toAdd.length; i++) {
       var item = toAdd[i].toLowerCase();
@@ -61,7 +80,7 @@ exports.lambdaHandler = async (event, context) => {
     return response; // Returning a 200 if the item has been inserted
   }
   catch (e) {
-    let response = {
+    response = {
       statusCode: 500,
       body: JSON.stringify(e)
     };

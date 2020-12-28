@@ -1,7 +1,6 @@
 // const axios = require('axios')
 // const url = 'http://checkip.amazonaws.com/';
 const AWS = require('aws-sdk');
-let response;
 
 /**
  *
@@ -22,8 +21,22 @@ const datesAreOnSameDay = (first, second) =>
 
 exports.lambdaHandler = async (event, context) => {
   let body = JSON.parse(event.body);
-  const documentClient = new AWS.DynamoDB.DocumentClient();
+  var errorMessage = null;
+  if (!body.hasOwnProperty("calories")) {errorMessage = "Parameter \'calories\' is missing in the request body"}
+  if (!body.hasOwnProperty("fat")) {errorMessage = "Parameter \'fat\' is missing in the request body"}
+  if (!body.hasOwnProperty("protein")) {errorMessage = "Parameter \'protein\' is missing in the request body"}
+  if (!body.hasOwnProperty("carbs")) {errorMessage = "Parameter \'carbs\' is missing in the request body"}
+  if (!body.hasOwnProperty("id")) {errorMessage = "Parameter \'id\' is missing in the request body"}
+  if (errorMessage) {
+    var response = {
+      statusCode: 509,
+      body: errorMessage
+    };
+    return response;
+  }
 
+
+  const documentClient = new AWS.DynamoDB.DocumentClient();
   var getMacros = {
     TableName: 'Users',
     Key: {
@@ -34,6 +47,13 @@ exports.lambdaHandler = async (event, context) => {
 
   try {
     const getMacrosData = await documentClient.get(getMacros).promise();
+    if(!getMacrosData.hasOwnProperty(["Item"])){
+      var response = {
+        statusCode: 509,
+        body: `user \'${body["id"]}\' not found`
+      };
+      return response;
+    }
     var macros = getMacrosData["Item"]["macros"];
     var today = new Date();
     var lastDate = new Date(macros["date"]);

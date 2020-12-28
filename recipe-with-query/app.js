@@ -4,7 +4,6 @@ const AWS = require('aws-sdk');
 const https = require('https');
 const querystring = require('querystring');
 
-let response;
 
 /**
  *
@@ -20,6 +19,21 @@ let response;
  */
 exports.lambdaHandler = async (event, context) => {
   let body = JSON.parse(event.body);
+  var errorMessage = null;
+  if (!body.hasOwnProperty("id")) {
+    errorMessage = "Parameter \'id\' is missing in the request body";
+  }
+  if (!body.hasOwnProperty("query")) {
+    errorMessage = "Parameter \'query\' is missing in the request body";
+  }
+  if (errorMessage) {
+    var response = {
+      statusCode: 509,
+      body: errorMessage
+    };
+    return response;
+  }
+  
 
   let dataString = '';
 

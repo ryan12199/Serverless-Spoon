@@ -28,10 +28,16 @@ exports.lambdaHandler = async (event, context) => {
   };
 
   try {
-    // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
     const getInventoryData = await documentClient.get(getInventory).promise();
-    var inventory = Object.values(getInventoryData["Item"]["inventory"]);
+    if(!getInventoryData.hasOwnProperty(["Item"])){
+      var response = {
+        statusCode: 509,
+        body: `user \'${body["id"]}\' not found`
+      };
+      return response;
+    }
 
+    var inventory = Object.values(getInventoryData["Item"]["inventory"]);
     var response = {
       body: JSON.stringify({ "inventory": inventory }),
       statusCode: 200
