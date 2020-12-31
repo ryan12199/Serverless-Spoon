@@ -21,16 +21,25 @@ const datesAreOnSameDay = (first, second) =>
 
 exports.lambdaHandler = async (event, context) => {
   let body = JSON.parse(event.body);
+
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
+
+
   var errorMessage = null;
-  if (!body.hasOwnProperty("calories")) {errorMessage = "Parameter \'calories\' is missing in the request body"}
-  if (!body.hasOwnProperty("fat")) {errorMessage = "Parameter \'fat\' is missing in the request body"}
-  if (!body.hasOwnProperty("protein")) {errorMessage = "Parameter \'protein\' is missing in the request body"}
-  if (!body.hasOwnProperty("carbs")) {errorMessage = "Parameter \'carbs\' is missing in the request body"}
-  if (!body.hasOwnProperty("id")) {errorMessage = "Parameter \'id\' is missing in the request body"}
+  if (!body.hasOwnProperty("calories")) { errorMessage = "Parameter \'calories\' is missing in the request body" }
+  if (!body.hasOwnProperty("fat")) { errorMessage = "Parameter \'fat\' is missing in the request body" }
+  if (!body.hasOwnProperty("protein")) { errorMessage = "Parameter \'protein\' is missing in the request body" }
+  if (!body.hasOwnProperty("carbs")) { errorMessage = "Parameter \'carbs\' is missing in the request body" }
+  if (!body.hasOwnProperty("id")) { errorMessage = "Parameter \'id\' is missing in the request body" }
   if (errorMessage) {
     var response = {
       statusCode: 509,
-      body: errorMessage
+      body: errorMessage,
+      headers: CORS
     };
     return response;
   }
@@ -47,10 +56,11 @@ exports.lambdaHandler = async (event, context) => {
 
   try {
     const getMacrosData = await documentClient.get(getMacros).promise();
-    if(!getMacrosData.hasOwnProperty(["Item"])){
+    if (!getMacrosData.hasOwnProperty(["Item"])) {
       var response = {
         statusCode: 509,
-        body: `user \'${body["id"]}\' not found`
+        body: `user \'${body["id"]}\' not found`,
+        headers: CORS
       };
       return response;
     }
@@ -91,14 +101,16 @@ exports.lambdaHandler = async (event, context) => {
 
     var response = {
       body: JSON.stringify({ "macros": newMacros }),
-      statusCode: 200
+      statusCode: 200,
+      headers: CORS
     };
     return response;
   }
   catch (e) {
     let response = {
       statusCode: 500,
-      body: JSON.stringify(e)
+      body: JSON.stringify(e),
+      headers: CORS
     };
     return response;
   }

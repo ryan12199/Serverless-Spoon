@@ -1,7 +1,6 @@
 // const axios = require('axios')
 // const url = 'http://checkip.amazonaws.com/';
 const AWS = require('aws-sdk');
-let response;
 
 /**
  *
@@ -18,37 +17,71 @@ let response;
 exports.lambdaHandler = async (event, context) => {
 
   const documentClient = new AWS.DynamoDB.DocumentClient();
-
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
   var getUser = {
     TableName: 'Users',
     Key: {
       "id": event['queryStringParameters']['id']
     },
-    ProjectionExpression: "inventory,firstName,lastName,macros"
+    ProjectionExpression: "inventory,macros"
   };
 
+  var getUserData;
   try {
-    // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
-    const getUserData = await documentClient.get(getUser).promise();
+    getUserData = await documentClient.get(getUser).promise();
     if(!getUserData.hasOwnProperty(["Item"])){
-      var response = {
-        statusCode: 509,
-        body: `user \'${body["id"]}\' not found`
+      var macrosJSON = {
+        "calories": 0,
+        "protein": 0,
+        "fat": 0,
+        "carbs": 0,
+        "date": new Date().toJSON()
       };
-      return response;
+      var newUser = {
+        id: event['queryStringParameters']['id'],
+        recipes: [],
+        cachedRecipes : [],
+        inventory: [],
+        macros: macrosJSON,
+      };
+      const insertUserParams = {
+        TableName: "Users",
+        Item: newUser
+      };
+        const insertUserData = await documentClient.put(insertUserParams).promise();
+        var response = {
+          body: JSON.stringify({ "user": newUser, isNewUser : true }),
+          statusCode: 200,
+          headers : CORS
+        };
+        return response;
+      }}
+      catch(e){
+        let response = {
+          headers : CORS,
+          statusCode: 500,
+          body: "User not found and could not be created. Error: " + JSON.stringify(e)
+        };
+        return response;
     }
+    try{
     var user = getUserData["Item"];
-
     var response = {
-      body: JSON.stringify({ "user": user }),
+      headers : CORS,
+      body: JSON.stringify({ "user": user, isNewUser : false }),
       statusCode: 200
     };
     return response; // Returning a 200 if the item has been inserted
-  }
+   }
   catch (e) {
     let response = {
+      headers : CORS,
       statusCode: 500,
-      body: JSON.stringify(e)
+      body: "User exists but could not be retrieved. Error: " + JSON.stringify(e)
     };
     return response;
   }

@@ -25,9 +25,15 @@ exports.lambdaHandler = async (event, context) => {
   if (!body.hasOwnProperty("id")) {
     errorMessage = "Parameter \'id\' is missing in the request body";
   }
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
   if (errorMessage) {
     var response = {
       statusCode: 509,
+      headers : CORS,
       body: errorMessage
     };
     return response;
@@ -63,6 +69,7 @@ try {
   
   return {
     statusCode: 200,
+    headers : CORS,
     body: JSON.stringify({"recipes" : dataString})
   };;
 
@@ -71,6 +78,7 @@ try {
  } catch (e) {
    console.log(e);
    return {
+     headers : CORS,
      statusCode: 500,
      body: JSON.stringify(e)
    };

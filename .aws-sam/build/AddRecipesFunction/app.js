@@ -17,6 +17,12 @@ const AWS = require('aws-sdk');
 exports.lambdaHandler = async (event, context) => {
 
   let body = JSON.parse(event.body);
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
+
   var errorMessage = null;
   if (!body.hasOwnProperty("recipeIds")) {
     errorMessage = "Parameter \'recipeIds\' is missing in the request body";
@@ -27,7 +33,8 @@ exports.lambdaHandler = async (event, context) => {
   if (errorMessage) {
     var response = {
       statusCode: 509,
-      body: errorMessage
+      body: errorMessage, 
+      headers : CORS
     };
     return response;
   }
@@ -47,7 +54,8 @@ exports.lambdaHandler = async (event, context) => {
     if(!getRecipesData.hasOwnProperty(["Item"])){
       var response = {
         statusCode: 509,
-        body: `user \'${body["id"]}\' not found`
+        body: `user \'${body["id"]}\' not found`,
+        headers : CORS
       };
       return response;
     }
@@ -73,14 +81,16 @@ exports.lambdaHandler = async (event, context) => {
 
     var response = {
       body: JSON.stringify({ "savedRecipes": recipesList }),
-      statusCode: 200
+      statusCode: 200,
+      headers : CORS
     };
     return response; // Returning a 200 if the item has been inserted
   }
   catch (e) {
     let response = {
       statusCode: 500,
-      body: JSON.stringify(e)
+      body: JSON.stringify(e),
+      headers: CORS
     };
     return response;
   }

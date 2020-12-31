@@ -18,6 +18,11 @@ const querystring = require('querystring');
  */
 exports.lambdaHandler = async (event, context) => {
   let body = JSON.parse(event.body);
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
   var errorMessage = null;
   if (!body.hasOwnProperty("id")) {
     errorMessage = "Parameter \'id\' is missing in the request body";
@@ -25,6 +30,7 @@ exports.lambdaHandler = async (event, context) => {
   if (errorMessage) {
     var response = {
       statusCode: 509,
+      headers : CORS,
       body: errorMessage
     };
     return response;
@@ -46,6 +52,7 @@ exports.lambdaHandler = async (event, context) => {
     const getInventoryData = await documentClient.get(params).promise();
     if(!getInventoryData.hasOwnProperty(["Item"])){
       var response = {
+        headers : CORS,
         statusCode: 509,
         body: `user \'${body["id"]}\' not found`
       };
@@ -81,6 +88,7 @@ exports.lambdaHandler = async (event, context) => {
 
     return {
       statusCode: 200,
+      headers : CORS,
       body: JSON.stringify({"recipes" : dataString})
     };;
 
@@ -90,6 +98,7 @@ exports.lambdaHandler = async (event, context) => {
     console.log(e);
     return {
       statusCode: 500,
+      headers : CORS,
       body: JSON.stringify(e)
     };
   }

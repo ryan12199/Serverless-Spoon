@@ -17,6 +17,11 @@ const AWS = require('aws-sdk');
 exports.lambdaHandler = async (event, context) => {
 
   let body = JSON.parse(event.body)
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
   var errorMessage = null;
   if (!body.hasOwnProperty("items")) {
     errorMessage = "Parameter \'items\' is missing in the request body";
@@ -26,6 +31,7 @@ exports.lambdaHandler = async (event, context) => {
   }
   if (errorMessage) {
     var response = {
+      headers : CORS,
       statusCode: 509,
       body: errorMessage
     };
@@ -48,6 +54,7 @@ exports.lambdaHandler = async (event, context) => {
     if(!getInventoryData.hasOwnProperty(["Item"])){
       var response = {
         statusCode: 509,
+        headers : CORS,
         body: `user \'${body["id"]}\' not found`
       };
       return response;
@@ -73,13 +80,15 @@ exports.lambdaHandler = async (event, context) => {
 
     var response = {
       body: JSON.stringify({"inventory" : newInventory}),
-      statusCode: 200
+      statusCode: 200,
+      headers : CORS
     };
     return response; // Returning a 200 if the item has been inserted
   }
   catch (e) {
     let response = {
       statusCode: 500,
+      headers : CORS,
       body: JSON.stringify(e)
     };
     return response;

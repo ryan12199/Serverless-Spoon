@@ -17,6 +17,11 @@ const AWS = require('aws-sdk');
 exports.lambdaHandler = async (event, context) => {
 
   let body = JSON.parse(event.body)
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
 
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
@@ -38,20 +43,22 @@ exports.lambdaHandler = async (event, context) => {
   if (errorMessage) {
     var response = {
       statusCode: 509,
-      body: errorMessage
+      body: errorMessage,
+      headers: CORS
     };
     return response;
   }
   try {
     const getInventoryData = await documentClient.get(getInventory).promise();
-    if(!getInventoryData.hasOwnProperty(["Item"])){
+    if (!getInventoryData.hasOwnProperty(["Item"])) {
       var response = {
         statusCode: 509,
-        body: `user \'${body["id"]}\' not found`
+        body: `user \'${body["id"]}\' not found`,
+        headers: CORS
       };
       return response;
     }
-    
+
     var inventory = Object.values(getInventoryData["Item"]["inventory"]);
 
 
@@ -75,14 +82,16 @@ exports.lambdaHandler = async (event, context) => {
 
     var response = {
       body: JSON.stringify({ "inventory": inventory }),
-      statusCode: 200
+      statusCode: 200,
+      headers: CORS
     };
     return response; // Returning a 200 if the item has been inserted
   }
   catch (e) {
     response = {
       statusCode: 500,
-      body: JSON.stringify(e)
+      body: JSON.stringify(e),
+      headers: CORS
     };
     return response;
   }

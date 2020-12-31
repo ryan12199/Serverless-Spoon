@@ -17,6 +17,11 @@ let response;
  */
 exports.lambdaHandler = async (event, context) => {
 
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
   var getInventory = {
@@ -31,6 +36,7 @@ exports.lambdaHandler = async (event, context) => {
     const getInventoryData = await documentClient.get(getInventory).promise();
     if(!getInventoryData.hasOwnProperty(["Item"])){
       var response = {
+        headers : CORS,
         statusCode: 509,
         body: `user \'${body["id"]}\' not found`
       };
@@ -39,6 +45,7 @@ exports.lambdaHandler = async (event, context) => {
 
     var inventory = Object.values(getInventoryData["Item"]["inventory"]);
     var response = {
+      headers : CORS,
       body: JSON.stringify({ "inventory": inventory }),
       statusCode: 200
     };
@@ -46,6 +53,7 @@ exports.lambdaHandler = async (event, context) => {
   }
   catch (e) {
     let response = {
+      headers : CORS,
       statusCode: 500,
       body: JSON.stringify(e)
     };

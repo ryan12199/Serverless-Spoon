@@ -22,6 +22,12 @@ const datesAreOnSameDay = (first, second) =>
 
 exports.lambdaHandler = async (event, context) => {
   let body = JSON.parse(event.body);
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
+
   var errorMessage = null;
   if (!body.hasOwnProperty("recipeId")) {
     errorMessage = "Parameter \'recipeIds\' is missing in the request body";
@@ -32,7 +38,8 @@ exports.lambdaHandler = async (event, context) => {
   if (errorMessage) {
     var response = {
       statusCode: 509,
-      body: errorMessage
+      body: errorMessage,
+      headers : CORS
     };
     return response;
   }
@@ -102,7 +109,8 @@ exports.lambdaHandler = async (event, context) => {
     if(!userData.hasOwnProperty(["Item"])){
       var response = {
         statusCode: 509,
-        body: `user \'${body["id"]}\' not found`
+        body: `user \'${body["id"]}\' not found`,
+        headers : CORS
       };
       return response;
     }
@@ -135,6 +143,7 @@ exports.lambdaHandler = async (event, context) => {
     const update = await documentClient.update(updateMacros).promise();
 
     var response = {
+      headers : CORS,
       body: JSON.stringify({ "ingridients": ingridients, "macros" : nutrientsResponse, "missingIngridients" : missingInventoryItems, "instructions" : recipeJSON["instructions"], "analyzedInstructions" : recipeJSON["analyzedInstructions"]}),
       statusCode: 200
     };
@@ -143,6 +152,7 @@ exports.lambdaHandler = async (event, context) => {
   catch (e) {
     let response = {
       statusCode: 500,
+      headers : CORS,
       body: JSON.stringify(e)
     };
     return response;

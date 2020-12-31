@@ -4,8 +4,6 @@ const AWS = require('aws-sdk');
 const https = require('https');
 const querystring = require('querystring');
 
-let response;
-
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -19,6 +17,11 @@ let response;
  * 
  */
 exports.lambdaHandler = async (event, context) => {
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
   var dataString = "";
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
@@ -35,6 +38,7 @@ exports.lambdaHandler = async (event, context) => {
     if(!getRecipesData.hasOwnProperty(["Item"])){
       var response = {
         statusCode: 509,
+        headers : CORS,
         body: `user \'${body["id"]}\' not found`
       };
       return response;
@@ -43,7 +47,7 @@ exports.lambdaHandler = async (event, context) => {
     console.log(recipes);
     var recipeString = recipes.toString();
     console.log(recipeString);
-    const response = await new Promise((resolve, reject) => {
+    const APIresponse = await new Promise((resolve, reject) => {
       var url = "https://api.spoonacular.com/recipes/informationBulk?" + querystring.stringify({
         "apiKey": "d41161c9f9e8416cb1f41f655ea69192",
         "ids": recipeString,
@@ -70,12 +74,14 @@ exports.lambdaHandler = async (event, context) => {
     });
     return {
       statusCode: 200,
+      headers : CORS,
       body: JSON.stringify({"savedRecipes" : dataString})
     };
   }
   catch (e) {
     return {
       statusCode: 500,
+      headers : CORS,
       body: JSON.stringify(e)
     }
   }

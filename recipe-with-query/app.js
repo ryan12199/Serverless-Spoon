@@ -19,6 +19,11 @@ const querystring = require('querystring');
  */
 exports.lambdaHandler = async (event, context) => {
   let body = JSON.parse(event.body);
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
   var errorMessage = null;
   if (!body.hasOwnProperty("id")) {
     errorMessage = "Parameter \'id\' is missing in the request body";
@@ -29,6 +34,7 @@ exports.lambdaHandler = async (event, context) => {
   if (errorMessage) {
     var response = {
       statusCode: 509,
+      headers : CORS,
       body: errorMessage
     };
     return response;
@@ -66,6 +72,10 @@ exports.lambdaHandler = async (event, context) => {
     });
   });
 
-  return response;
+  return {
+    statusCode: 200,
+    headers: CORS,
+    body: JSON.stringify({ "recipes": dataString })
+  };
 };
 

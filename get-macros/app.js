@@ -23,6 +23,11 @@ const datesAreOnSameDay = (first, second) =>
 exports.lambdaHandler = async (event, context) => {
 
   const documentClient = new AWS.DynamoDB.DocumentClient();
+  const CORS = {
+    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+  };
 
   var getMacros = {
     TableName: 'Users',
@@ -37,6 +42,7 @@ exports.lambdaHandler = async (event, context) => {
     if(!getMacrosData.hasOwnProperty(["Item"])){
       var response = {
         statusCode: 509,
+        headers : CORS,
         body: `user \'${body["id"]}\' not found`
       };
       return response;
@@ -48,6 +54,7 @@ exports.lambdaHandler = async (event, context) => {
     
     if(datesAreOnSameDay(today, lastDate)){
       var response = {
+        headers : CORS,
         body: JSON.stringify({"macros" : macros}),
         statusCode: 200
       };
@@ -71,7 +78,8 @@ exports.lambdaHandler = async (event, context) => {
 
     var response = {
       body: JSON.stringify({"macros" : newMacros}),
-      statusCode: 200
+      statusCode: 200,
+      headers : CORS
     };
     return response; 
 
@@ -84,7 +92,8 @@ exports.lambdaHandler = async (event, context) => {
   catch (e) {
     let response = {
       statusCode: 500,
-      body: JSON.stringify(e)
+      body: JSON.stringify(e),
+      headers : CORS
     };
     return response;
   }
