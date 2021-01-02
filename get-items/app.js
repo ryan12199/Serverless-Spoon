@@ -23,11 +23,12 @@ exports.lambdaHandler = async (event, context) => {
     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
   };
   const documentClient = new AWS.DynamoDB.DocumentClient();
+  const userId = event['queryStringParameters']['id']; 
 
   var getInventory = {
     TableName: 'Users',
     Key: {
-      "id": event['queryStringParameters']['id']
+      "id": userId
     },
     ProjectionExpression: "inventory"
   };
@@ -38,7 +39,7 @@ exports.lambdaHandler = async (event, context) => {
       var response = {
         headers : CORS,
         statusCode: 509,
-        body: `user \'${body["id"]}\' not found`
+        body: `user \'${userId}\' not found`
       };
       return response;
     }

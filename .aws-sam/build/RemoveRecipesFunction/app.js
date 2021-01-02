@@ -33,7 +33,7 @@ exports.lambdaHandler = async (event, context) => {
     var response = {
       statusCode: 509,
       body: errorMessage,
-      headers : CORS
+      headers: CORS
     };
     return response;
   }
@@ -44,34 +44,33 @@ exports.lambdaHandler = async (event, context) => {
     Key: {
       "id": body["id"]
     },
-    ProjectionExpression: "recipes"
+    ProjectionExpression: "savedRecipeIds"
   };
 
   try {
     // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
     const getRecipesData = await documentClient.get(getRecipes).promise();
-    if(!getRecipesData.hasOwnProperty(["Item"])){
+    if (!getRecipesData.hasOwnProperty(["Item"])) {
       var response = {
         statusCode: 509,
-        headers : CORS,
+        headers: CORS,
         body: `user \'${body["id"]}\' not found`
       };
       return response;
     }
-    var recipeList = Object.values(getRecipesData["Item"]["recipes"]);
-    var toRemove = body["recipeIds"];
     var newRecipeList = [];
-    for (var i = 0; i < recipeList.length; i++) {
-      var recipe = recipeList[i];
-      if (toRemove.includes(recipe)) {
-        continue;
-      }
-      else {
-        newRecipeList.push(recipe);
+    if (getRecipesData["Item"]["savedRecipeIds"].length) {
+      var recipeList = Object.values(getRecipesData["Item"]["savedRecipeIds"]);
+      var toRemove = body["recipeIds"];
+      for (var i = 0; i < recipeList.length; i++) {
+        var recipe = recipeList[i];
+        if (!toRemove.includes(recipe)) {
+          newRecipeList.push(recipe);
+        }
       }
     }
     updateRecipes = getRecipes;
-    updateRecipes['UpdateExpression'] = "SET recipes = :array";
+    updateRecipes['UpdateExpression'] = "SET savedRecipeIds = :array";
     updateRecipes['ExpressionAttributeValues'] = {
       ':array': newRecipeList,
     };
@@ -80,14 +79,14 @@ exports.lambdaHandler = async (event, context) => {
     var response = {
       body: JSON.stringify({ "savedRecipes": newRecipeList }),
       statusCode: 200,
-      headers : CORS
+      headers: CORS
     };
     return response; // Returning a 200 if the item has been inserted
   }
   catch (e) {
     let response = {
       statusCode: 500,
-      headers : CORS,
+      headers: CORS,
       body: JSON.stringify(e)
     };
     return response;

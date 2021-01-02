@@ -39,7 +39,7 @@ exports.lambdaHandler = async (event, context) => {
     var response = {
       statusCode: 509,
       body: errorMessage,
-      headers : CORS
+      headers: CORS
     };
     return response;
   }
@@ -60,7 +60,7 @@ exports.lambdaHandler = async (event, context) => {
       var response = {
         statusCode: 509,
         body: `user \'${body["id"]}\' not found`,
-        headers : CORS
+        headers: CORS
       };
       return response;
     }
@@ -102,7 +102,7 @@ exports.lambdaHandler = async (event, context) => {
     var response = {
       body: JSON.stringify({ "macros": newMacros }),
       statusCode: 200,
-      headers : CORS
+      headers: CORS
     };
     return response;
   }
@@ -110,7 +110,7 @@ exports.lambdaHandler = async (event, context) => {
     let response = {
       statusCode: 500,
       body: JSON.stringify(e),
-      headers : CORS
+      headers: CORS
     };
     return response;
   }

@@ -31,7 +31,7 @@ exports.lambdaHandler = async (event, context) => {
   }
   if (errorMessage) {
     var response = {
-      headers : CORS,
+      headers: CORS,
       statusCode: 509,
       body: errorMessage
     };
@@ -51,10 +51,10 @@ exports.lambdaHandler = async (event, context) => {
   try {
     // Utilising the put method to insert an item into the table (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.03.html#GettingStarted.NodeJs.03.01)
     const getInventoryData = await documentClient.get(getInventory).promise();
-    if(!getInventoryData.hasOwnProperty(["Item"])){
+    if (!getInventoryData.hasOwnProperty(["Item"])) {
       var response = {
         statusCode: 509,
-        headers : CORS,
+        headers: CORS,
         body: `user \'${body["id"]}\' not found`
       };
       return response;
@@ -62,33 +62,33 @@ exports.lambdaHandler = async (event, context) => {
     var inventory = Object.values(getInventoryData["Item"]["inventory"]);
     var toRemove = body["items"];
     var newInventory = [];
-    for(var i=0; i<inventory.length; i++){
+    for (var i = 0; i < inventory.length; i++) {
       var item = inventory[i].toLowerCase();
-      if(toRemove.includes(item)){
-        continue; 
+      if (toRemove.includes(item)) {
+        continue;
       }
-      else{
+      else {
         newInventory.push(item);
       }
     }
-    updateInventory = getInventory; 
-    updateInventory['UpdateExpression'] =  "SET inventory = :array";
+    updateInventory = getInventory;
+    updateInventory['UpdateExpression'] = "SET inventory = :array";
     updateInventory['ExpressionAttributeValues'] = {
       ':array': newInventory,
     };
     const update = await documentClient.update(updateInventory).promise();
 
     var response = {
-      body: JSON.stringify({"inventory" : newInventory}),
+      body: JSON.stringify({ "inventory": newInventory }),
       statusCode: 200,
-      headers : CORS
+      headers: CORS
     };
     return response; // Returning a 200 if the item has been inserted
   }
   catch (e) {
     let response = {
       statusCode: 500,
-      headers : CORS,
+      headers: CORS,
       body: JSON.stringify(e)
     };
     return response;

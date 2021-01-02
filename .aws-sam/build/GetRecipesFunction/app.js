@@ -24,13 +24,14 @@ exports.lambdaHandler = async (event, context) => {
   };
   var dataString = "";
   const documentClient = new AWS.DynamoDB.DocumentClient();
+  const userId = event['queryStringParameters']['id']; 
 
   var getRecipes = {
     TableName: 'Users',
     Key: {
-      "id": event['queryStringParameters']['id']
+      "id": userId
     },
-    ProjectionExpression: "recipes"
+    ProjectionExpression: "savedRecipeIds,cachedRecipes"
   };
 
   try {
@@ -39,43 +40,29 @@ exports.lambdaHandler = async (event, context) => {
       var response = {
         statusCode: 509,
         headers : CORS,
-        body: `user \'${body["id"]}\' not found`
+        body: `user \'${userId}\' not found`
       };
       return response;
     }
-    var recipes = Object.values(getRecipesData["Item"]["recipes"]);
-    console.log(recipes);
-    var recipeString = recipes.toString();
-    console.log(recipeString);
-    const APIresponse = await new Promise((resolve, reject) => {
-      var url = "https://api.spoonacular.com/recipes/informationBulk?" + querystring.stringify({
-        "apiKey": "d41161c9f9e8416cb1f41f655ea69192",
-        "ids": recipeString,
-        "includeNutrition": false
-      });
-      const req = https.get(url, function (res) {
-        res.on('data', chunk => {
-          dataString += chunk;
-        });
-        res.on('end', () => {
-          resolve({
-            statusCode: 200,
-            body: JSON.parse(dataString)
-          });
-        });
-      });
-
-      req.on('error', (e) => {
-        reject({
-          statusCode: 500,
-          body: 'Something went wrong!'
-        });
-      });
-    });
+    var cachedRecipeIds = Object.values(getRecipesData["Item"]["savedRecipeIds"]);
+    var cachedRecipes = Object.values(getRecipesData["Item"]["cachedRecipes"]);
+    var responseList = [];
+    if(cachedRecipeIds.length==cachedRecipes.length){
+      responseList = cachedRecipes;
+    }
+    else{
+      var i; 
+      for(i=0; i<cachedRecipes.length; i++){
+        recipe = cachedRecipes[i];
+        if(cachedRecipeIds.includes(recipe.id)){
+          responseList.push(recipe);
+        }
+      }
+    }
     return {
       statusCode: 200,
       headers : CORS,
-      body: JSON.stringify({"savedRecipes" : dataString})
+      body: JSON.stringify({"savedRecipes" : responseList})
     };
   }
   catch (e) {

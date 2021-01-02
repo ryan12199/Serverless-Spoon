@@ -29,10 +29,11 @@ exports.lambdaHandler = async (event, context) => {
     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
   };
 
+  const userId = event['queryStringParameters']['id']; 
   var getMacros = {
     TableName: 'Users',
     Key: {
-      "id": event['queryStringParameters']['id']
+      "id": userId
     },
     ProjectionExpression: "macros"
   };
@@ -43,7 +44,7 @@ exports.lambdaHandler = async (event, context) => {
       var response = {
         statusCode: 509,
         headers : CORS,
-        body: `user \'${body["id"]}\' not found`
+        body: `user \'${userId}\' not found`
       };
       return response;
     }

@@ -22,10 +22,12 @@ exports.lambdaHandler = async (event, context) => {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
   };
+  const userId = event['queryStringParameters']['id']; 
+
   var getUser = {
     TableName: 'Users',
     Key: {
-      "id": event['queryStringParameters']['id']
+      "id": userId
     },
     ProjectionExpression: "inventory,macros"
   };
@@ -44,6 +46,8 @@ exports.lambdaHandler = async (event, context) => {
       var newUser = {
         id: event['queryStringParameters']['id'],
         recipes: [],
+        cachedRecipes : [],
+        savedRecipeIds : [],
         inventory: [],
         macros: macrosJSON,
       };
