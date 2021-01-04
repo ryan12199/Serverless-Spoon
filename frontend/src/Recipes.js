@@ -17,20 +17,13 @@ function ImageFormatter({ value }) {
   );
 }
 
-
-
 function Recipes() {
   const [cookies, setCookie] = useCookies(['name']);
-  const [recipeData, setRecipeData] = useState(null);
-  const [rows, setRows] = useState([]);
-  const [, forceUpdate] = useReducer(x => x + 1, 0);
-  const [test, setTest] = useState(0);
-  
+  const [rows, setRows] = useState([]);  
 
   const URL = `https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/getRecipes?id=${cookies.id}`;
   console.log(URL);
   useEffect(() => {
-    // alert("eitan");
     fetch(URL)
       .then(response => response.json())
       .then((data) => {
@@ -93,14 +86,7 @@ function Recipes() {
       formatter: ({ row }) => <ImageFormatter value={row.avatar} />
     }
   ];
-  // const titleActions = [
-  //   {
-  //     icon: <span className="glyphicon glyphicon-remove" />,
-  //     callback: () => {
-  //       alert("Deleting");
-  //     }
-  //   }
-  // ];
+
   function getCellActions(column, row) {
     if(column.key=="title"){
       return ([
@@ -128,7 +114,6 @@ function Recipes() {
         getCellActions={getCellActions}
       />
       <h1>Hello {cookies.id}!</h1>
-      <h1>{JSON.stringify(recipeData)}</h1>
     </div>)
   }
   else {
