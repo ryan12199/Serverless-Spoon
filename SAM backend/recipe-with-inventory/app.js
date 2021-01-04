@@ -61,7 +61,7 @@ exports.lambdaHandler = async (event, context) => {
     var inventory = Object.values(getInventoryData["Item"]["inventory"]);
 
     let dataString = '';
-    const response = await new Promise((resolve, reject) => {
+    response = await new Promise((resolve, reject) => {
       var url = "https://api.spoonacular.com/recipes/findByIngredients?" + querystring.stringify({
         "apiKey": "d41161c9f9e8416cb1f41f655ea69192",
         "ingredients": inventory
