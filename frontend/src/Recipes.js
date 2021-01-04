@@ -98,8 +98,15 @@ function Recipes() {
               const deletePOST = functionSendDeleteRecipe(row.id);
             }
           }
+        },
+        {
+          icon: <span className="glyphicon glyphicon-info-sign" />,
+          callback: () => {
+            window.location = `../recipePage?recipeId=${row.id}`;
+          }
         }
-      ]);
+      ]
+      );
     }
     return null;
   }

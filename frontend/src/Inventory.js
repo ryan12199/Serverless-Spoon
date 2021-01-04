@@ -22,7 +22,7 @@ function Inventory() {
   const [inventoryRows, setInventoryRows] = useState([]);
   const [recipeSearchRows, setRecipeSearchRows] = useState([]);
 
-  async function functionSendDeleteItem(item) {
+  async function deleteItemPOST(item) {
     const result = await fetch("https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/removeItems", {
       method: 'POST',
       body: JSON.stringify({ "id": cookies.id, items: [item] }),
@@ -42,6 +42,16 @@ function Inventory() {
     const body = await result.json();
     console.log(body);
     return body;
+  };
+
+  async function saveRecipePOST(recipeId) {
+    const result = await fetch("https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/addRecipes", {
+      method: 'POST',
+      body: JSON.stringify({ "id": cookies.id, recipeIds: [recipeId] }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   };
 
   async function searchRecipes() {
@@ -108,7 +118,7 @@ function Inventory() {
           callback: () => {
             if (window.confirm("Are you sure you want to remove \"" + row.title + "\" from your saved inventory?")) {
               alert("fine, deleting " + row.title);
-              const deletePOST = functionSendDeleteItem(row.title);
+              const deletePOST = deleteItemPOST(row.title);
             }
           }
         }
@@ -122,15 +132,20 @@ function Inventory() {
     if (column.key == "title") {
       return ([
         {
-          icon: <span className="glyphicon glyphicon-floppy-disk" />,
+          icon: <span className="glyphicon glyphicon-bookmark" />,
           callback: () => {
-            if (window.confirm("Are you sure you want to remove \"" + row.title + "\" from your saved inventory?")) {
-              alert("fine, deleting " + row.title);
-              const deletePOST = functionSendDeleteItem(row.title);
+              alert(row.title + " was added to your saved recipes list");
+              saveRecipePOST(row.id);
             }
+        },
+        {
+          icon: <span className="glyphicon glyphicon-info-sign" />,
+          callback: () => {
+            window.location = `../recipePage?recipeId=${row.id}`;
           }
         }
-      ]);
+      ]
+      );
     }
     return null;
   }
