@@ -68,7 +68,7 @@ exports.lambdaHandler = async (event, context) => {
     var today = new Date();
     var lastDate = new Date(macros["date"]);
     var newMacros;
-    if (datesAreOnSameDay(today, lastDate)) {
+    // if (datesAreOnSameDay(today, lastDate)) {
 
       newCal = parseInt(macros["calories"]) + parseInt(body["calories"]);
       newProt = parseInt(macros["protein"]) + parseInt(body["protein"]);
@@ -82,16 +82,16 @@ exports.lambdaHandler = async (event, context) => {
         "carbs": newCarbs,
         "date": lastDate
       }
-    }
-    else {
-      newMacros = {
-        "calories": parseInt(body["calories"]),
-        "protein": parseInt(body["protein"]),
-        "fat": parseInt(body["fat"]),
-        "carbs": parseInt(body["carbs"]),
-        "date": new Date().toJSON()
-      }
-    }
+    // }
+    // else {
+    //   newMacros = {
+    //     "calories": parseInt(body["calories"]),
+    //     "protein": parseInt(body["protein"]),
+    //     "fat": parseInt(body["fat"]),
+    //     "carbs": parseInt(body["carbs"]),
+    //     "date": new Date().toJSON()
+    //   }
+    // }
     var updateMacros = getMacros;
     updateMacros['UpdateExpression'] = "SET macros = :newMacros";
     updateMacros['ExpressionAttributeValues'] = {

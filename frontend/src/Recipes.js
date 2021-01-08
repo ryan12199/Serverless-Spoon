@@ -57,7 +57,7 @@ function Recipes() {
         'Content-Type' : 'application/json'
       }
     });
-    var newRows = []; 
+    var newRows = [];
     var i;
     for(i=0; i<rows.length; i++){
       var row = rows[i];

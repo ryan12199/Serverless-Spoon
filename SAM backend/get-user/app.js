@@ -29,7 +29,7 @@ exports.lambdaHandler = async (event, context) => {
     Key: {
       "id": userId
     },
-    ProjectionExpression: "inventory,macros"
+    ProjectionExpression: "inventory,macros,macroGoals"
   };
 
   var getUserData;
@@ -43,6 +43,12 @@ exports.lambdaHandler = async (event, context) => {
         "carbs": 0,
         "date": new Date().toJSON()
       };
+      var macroGoals = {
+        "calories"  : 2000,
+        "carbs" : 300,
+        "protein" : 70,
+        "fat" : 65 
+      }
       var newUser = {
         id: event['queryStringParameters']['id'],
         recipes: [],
@@ -50,6 +56,7 @@ exports.lambdaHandler = async (event, context) => {
         savedRecipeIds : [],
         inventory: [],
         macros: macrosJSON,
+        macroGoals : macroGoals
       };
       const insertUserParams = {
         TableName: "Users",

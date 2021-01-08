@@ -21,6 +21,9 @@ function Inventory() {
   const [cookies, setCookie] = useCookies(['name']);
   const [inventoryRows, setInventoryRows] = useState([]);
   const [recipeSearchRows, setRecipeSearchRows] = useState([]);
+  const [inventoryAddRowsHTML, setInventoryAddRowsHTML] = useState([]);
+  const [inventoryAddRowsString, setInventoryAddRowsString] = useState([]);
+
 
   async function deleteItemPOST(item) {
     const result = await fetch("https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/removeItems", {
@@ -42,6 +45,29 @@ function Inventory() {
     const body = await result.json();
     console.log(body);
     return body;
+  };
+
+  async function addItemsPOST() {
+    var newRows = [];
+    console.log(inventoryAddRowsString);
+    for (var i = 0; i < inventoryAddRowsString.length; i++) {
+      var itemStr = inventoryAddRowsString[i];
+      newRows.push({ "title": inventoryAddRowsString[i] });
+    }
+    for (var i = 0; i < inventoryRows.length; i++) {
+      var item = inventoryRows[i];
+      if (!inventoryAddRowsString.includes(item.title)) {
+        newRows.push({ "title": item.title });
+      }
+    }
+    const result = await fetch("https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/addItems", {
+      method: 'POST',
+      body: JSON.stringify({ "id": cookies.id, items: inventoryAddRowsString }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    setInventoryRows(newRows);
   };
 
   async function saveRecipePOST(recipeId) {
@@ -109,7 +135,6 @@ function Inventory() {
     }
   ];
 
-
   function getInventoryCellActions(column, row) {
     if (column.key == "title") {
       return ([
@@ -127,16 +152,15 @@ function Inventory() {
     return null;
   }
 
-
   function getSearchCellActions(column, row) {
     if (column.key == "title") {
       return ([
         {
           icon: <span className="glyphicon glyphicon-bookmark" />,
           callback: () => {
-              alert(row.title + " was added to your saved recipes list");
-              saveRecipePOST(row.id);
-            }
+            alert(row.title + " was added to your saved recipes list");
+            saveRecipePOST(row.id);
+          }
         },
         {
           icon: <span className="glyphicon glyphicon-info-sign" />,
@@ -150,25 +174,51 @@ function Inventory() {
     return null;
   }
 
+  function editInventoryAddRows(text) {
+    var newRowsHTML = [];
+    var newRowsString = [];
+    if (text != "") {
+      var splitText = text.split(",");
+      for (var i = 0; i < splitText.length; i++) {
+        var item = splitText[i].trim();
+        newRowsHTML.push(<ListGroup.Item>{item}</ListGroup.Item>);
+        newRowsString.push(item);
+      }
+    }
+    setInventoryAddRowsHTML(newRowsHTML);
+    setInventoryAddRowsString(newRowsString);
+  }
 
+  var returnHTML = [];
   if (inventoryRows) {
     return (<div>
-      <h2>Recipes Page</h2>
+      <h1>Hello {cookies.id}, here is your inventory page</h1>
       <ReactDataGrid id="inventoryGrid"
         columns={inventoryColumns}
         rowGetter={i => inventoryRows[i]}
         rowsCount={inventoryRows.length}
         getCellActions={getInventoryCellActions}
       />
-      <h1>Hello {cookies.id}!</h1>
+      <label>
+        Add Items:
+      <input type="text" onChange={(event) => editInventoryAddRows(event.target.value)} />
+        {inventoryAddRowsHTML.length > 0 &&
+          <ListGroup>
+            {inventoryAddRowsHTML}
+          </ListGroup>
+        }
+      </label>
+      <button onClick={() => addItemsPOST()}>add items</button>
       <h2>Here are recipies you can cook</h2>
       <button onClick={() => searchRecipes()}>show recipes</button>
-      <ReactDataGrid id="recipeSearchGrid"
-        columns={recipeSearchColumns}
-        rowGetter={i => recipeSearchRows[i]}
-        rowsCount={recipeSearchRows.length}
-        getCellActions={getSearchCellActions}
-      />
+      { recipeSearchRows.length > 0 &&
+        <ReactDataGrid id="recipeSearchGrid"
+          columns={recipeSearchColumns}
+          rowGetter={i => recipeSearchRows[i]}
+          rowsCount={recipeSearchRows.length}
+          getCellActions={getSearchCellActions}
+        />
+      }
     </div>)
   }
   else {
@@ -179,36 +229,5 @@ function Inventory() {
     </div>)
   }
 }
-
-
-
-//     const URL = `https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/getItems?id=${cookies.id}`;
-//     console.log(URL);
-//     useEffect(() => {
-//         fetch(URL)
-//             .then(response => response.json())
-//             .then((data)=>{
-//                 if(data){
-//                     var i;
-//                     var generatedItems = [];
-//                     var inventory = data.inventory;
-//                     for(i=0;i<inventory.length;i++){
-//                       var item = inventory[i];
-//                       generatedItems.push(<ListGroup.Item>{item}</ListGroup.Item>);
-//                     }
-//                     setItems(generatedItems);
-//                 }
-//             })
-//     }, []);
-
-// return( <div>
-//   <h2>Inventory Page</h2> 
-//   <ListGroup>
-//   {items}
-//   </ListGroup>
-//   </div>
-// )
-
-// }
 
 export default Inventory; 

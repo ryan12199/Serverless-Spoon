@@ -99,4 +99,11 @@ source_md5 = ""
 packagetype = "Zip"
 functions = ["ChooseRecipeFunction"]
 
+[function_build_definitions.3f7f500e-af64-4483-8ba6-76b741d2c87b]
+codeuri = "change-macro-goals/"
+runtime = "nodejs12.x"
+source_md5 = ""
+packagetype = "Zip"
+functions = ["changeMacroGoalFunction"]
+
 [layer_build_definitions]

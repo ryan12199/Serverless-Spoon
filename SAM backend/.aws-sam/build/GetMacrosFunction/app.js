@@ -35,7 +35,7 @@ exports.lambdaHandler = async (event, context) => {
     Key: {
       "id": userId
     },
-    ProjectionExpression: "macros"
+    ProjectionExpression: "macros, macroGoals"
   };
 
   try {
@@ -49,44 +49,45 @@ exports.lambdaHandler = async (event, context) => {
       return response;
     }
     var macros = getMacrosData["Item"]["macros"];
+    var goals = getMacrosData["Item"]["macroGoals"];
     var today = new Date(); 
     var lastDate = new Date(macros["date"]);
    
     
-    if(datesAreOnSameDay(today, lastDate)){
+    // if(datesAreOnSameDay(today, lastDate)){
       var response = {
         headers : CORS,
-        body: JSON.stringify({"macros" : macros}),
+        body: JSON.stringify({"macros" : macros, "goals" : goals}),
         statusCode: 200
       };
       return response; 
-    }
-    else{
-    var newMacros = {
-      "calories": 0,
-      "protein": 0,
-      "fat": 0,
-      "carbs": 0,
-      "date": today.toJSON()
-    };
+    // }
+    // else{
+    // var newMacros = {
+    //   "calories": 0,
+    //   "protein": 0,
+    //   "fat": 0,
+    //   "carbs": 0,
+    //   "date": today.toJSON()
+    // };
 
-    var updateMacros = getMacros;
-    updateMacros['UpdateExpression'] = "SET macros = :newMacros";
-    updateMacros['ExpressionAttributeValues'] = {
-      ':newMacros': newMacros,
-    };
-    const update = await documentClient.update(updateMacros).promise();
+    // var updateMacros = getMacros;
+    // updateMacros['UpdateExpression'] = "SET macros = :newMacros";
+    // updateMacros['ExpressionAttributeValues'] = {
+    //   ':newMacros': newMacros,
+    // };
+    // const update = await documentClient.update(updateMacros).promise();
 
-    var response = {
-      body: JSON.stringify({"macros" : newMacros}),
-      statusCode: 200,
-      headers : CORS
-    };
-    return response; 
+    // var response = {
+    //   body: JSON.stringify({"macros" : newMacros}),
+    //   statusCode: 200,
+    //   headers : CORS
+    // };
+    // return response; 
 
 
 
-    }
+    // }
 
     
   }
