@@ -9,13 +9,6 @@ const ProgressBarFormatter = ({ value }) => {
   return <ProgressBar now={value} label={`${value}%`} width="50" height="50" />;
 };
 
-function ImageFormatter({ value }) {
-  return (
-    <div className="rdg-image-cell-wrapper">
-      <img src={value} />
-    </div>
-  );
-}
 
 function Recipes() {
   const [cookies, setCookie] = useCookies(['name']);
@@ -41,7 +34,7 @@ function Recipes() {
             if (recipe.diets.length) {
               dietsString = recipe.diets.toString();
             }
-            generatedRows.push({ title: recipe.title, cuisines: cuisineString, diets: dietsString, healthscore: recipe.healthScore, avatar: recipe.image, cookingTime: recipe.readyInMinutes, id:recipe.id});
+            generatedRows.push({ title: recipe.title, cuisines: cuisineString, diets: dietsString, healthscore: recipe.healthScore, cookingTime: recipe.readyInMinutes, id:recipe.id});
           }
           setRows(generatedRows);
         }
@@ -77,14 +70,7 @@ function Recipes() {
     { key: "cuisines", name: "Cuisines" },
     { key: "diets", name: "Diets" },
     { key: "cookingTime", name: "Cooking Time (Minutes)" },
-    { key: "healthscore", name: "Health Score", formatter: ProgressBarFormatter },
-    {
-      key: 'avatar',
-      name: 'Image',
-      width: 40,
-      resizable: true,
-      formatter: ({ row }) => <ImageFormatter value={row.avatar} />
-    }
+    { key: "healthscore", name: "Health Score", formatter: ProgressBarFormatter }
   ];
 
   function getCellActions(column, row) {
@@ -112,13 +98,22 @@ function Recipes() {
   }
 
   if (rows) {
+    const headerRowHeight = 50;
+    const rowHeight = 50; 
+    const totalHeight = headerRowHeight + (rowHeight*rows.length);
+
+    console.log(`row count ${rows.length}`);
     return (<div>
       <h2>Recipes Page</h2>
       <ReactDataGrid
         columns={columns}
         rowGetter={i => rows[i]}
         rowsCount={rows.length}
+        minHeight={totalHeight}
+        headerRowHeight={headerRowHeight}
+        rowHeight={rowHeight}
         getCellActions={getCellActions}
+
       />
       <h1>Hello {cookies.id}!</h1>
     </div>)

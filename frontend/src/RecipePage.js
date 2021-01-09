@@ -19,21 +19,21 @@ function RecipePage() {
         //https://api.spoonacular.com/recipes/782601/information?includeNutrition=true&apiKey=d41161c9f9e8416cb1f41f655ea69192
         const getRecipeURL = `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=d41161c9f9e8416cb1f41f655ea69192`;
         fetch(getRecipeURL)
-        .then(response => response.json())
-        .then((recipe) => {
-        if (recipe) {
-            var ingridientsArray = recipe.extendedIngredients;
-            var ingridientListItems = [];
-            for (var i = 0; i < ingridientsArray.length; i++) {
-                var ingridient = ingridientsArray[i];
-                if (ingridient.originalString) {
-                    ingridientListItems.push(<ListGroup.Item>{ingridient.originalString}</ListGroup.Item>)
+            .then(response => response.json())
+            .then((recipe) => {
+                if (recipe) {
+                    var ingridientsArray = recipe.extendedIngredients;
+                    var ingridientListItems = [];
+                    for (var i = 0; i < ingridientsArray.length; i++) {
+                        var ingridient = ingridientsArray[i];
+                        if (ingridient.originalString) {
+                            ingridientListItems.push(<ListGroup.Item>{ingridient.originalString}</ListGroup.Item>)
+                        }
+                    }
+                    setIngridients(ingridientListItems);
+                    setRecipeData(recipe);
                 }
-            }
-            setIngridients(ingridientListItems);
-            setRecipeData(recipe);
-            }
-        })
+            })
     }, []);
 
     if (recipeData) {
@@ -42,12 +42,17 @@ function RecipePage() {
                 <h1>{recipeData.title}</h1>
                 <h2>Will be ready in {recipeData.readyInMinutes} and serve {recipeData.servings} people</h2>
                 <div> {ReactHtmlParser(recipeData.summary)} </div>
-                <h2>Ingridients:</h2>
+                <h2>Ingredients:</h2>
                 <ListGroup>
                     {ingridients}
                 </ListGroup>
-                <h2>Instructions:</h2>
-                <p>{recipeData.instructions}</p>
+                { recipeData.instructions &&
+                    <div>
+                        <h2>Instructions:</h2>
+                        <p>{recipeData.instructions}</p>
+                    </div>
+                }
+
             </div>
         )
     }

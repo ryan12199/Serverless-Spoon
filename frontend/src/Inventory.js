@@ -9,14 +9,6 @@ const ProgressBarFormatter = ({ value }) => {
   return <ProgressBar now={value} label={`${value}%`} width="50" height="50" />;
 };
 
-function ImageFormatter({ value }) {
-  return (
-    <div className="rdg-image-cell-wrapper">
-      <img src={value} />
-    </div>
-  );
-}
-
 function Inventory() {
   const [cookies, setCookie] = useCookies(['name']);
   const [inventoryRows, setInventoryRows] = useState([]);
@@ -67,6 +59,9 @@ function Inventory() {
         'Content-Type': 'application/json'
       }
     });
+    setInventoryAddRowsHTML([]);
+    setInventoryAddRowsString([]);
+    document.getElementById('itemInput').value = '';
     setInventoryRows(newRows);
   };
 
@@ -95,7 +90,7 @@ function Inventory() {
           for (i = 0; i < recipes.length; i++) {
             var recipe = recipes[i];
             console.log("title " + recipe.title);
-            generatedRows.push({ title: recipe.title, image: recipe.image, id: recipe.id });
+            generatedRows.push({ title: recipe.title, id: recipe.id });
           }
           setRecipeSearchRows(generatedRows);
         }
@@ -125,14 +120,7 @@ function Inventory() {
   ];
 
   const recipeSearchColumns = [
-    { key: "title", name: "Title" },
-    {
-      key: 'image',
-      name: 'Image',
-      width: 40,
-      resizable: true,
-      formatter: ({ row }) => <ImageFormatter value={row.image} />
-    }
+    { key: "title", name: "Title" }
   ];
 
   function getInventoryCellActions(column, row) {
@@ -191,24 +179,30 @@ function Inventory() {
 
   var returnHTML = [];
   if (inventoryRows) {
+    const headerRowHeight = 50;
+    const rowHeight = 50; 
+    const totalInventoryHeight = headerRowHeight + (rowHeight*inventoryRows.length);
     return (<div>
       <h1>Hello {cookies.id}, here is your inventory page</h1>
       <ReactDataGrid id="inventoryGrid"
         columns={inventoryColumns}
         rowGetter={i => inventoryRows[i]}
         rowsCount={inventoryRows.length}
+        minHeight={totalInventoryHeight}
+        headerRowHeight={headerRowHeight}
+        rowHeight={rowHeight}
         getCellActions={getInventoryCellActions}
       />
       <label>
         Add Items:
-      <input type="text" onChange={(event) => editInventoryAddRows(event.target.value)} />
+      <input type="text" id="itemInput" onChange={(event) => editInventoryAddRows(event.target.value)} />
         {inventoryAddRowsHTML.length > 0 &&
           <ListGroup>
             {inventoryAddRowsHTML}
           </ListGroup>
         }
       </label>
-      <button onClick={() => addItemsPOST()}>add items</button>
+      <button type="submit" onClick={() => addItemsPOST()} class="btn btn-primary">Add</button>
       <h2>Here are recipies you can cook</h2>
       <button onClick={() => searchRecipes()}>show recipes</button>
       { recipeSearchRows.length > 0 &&
