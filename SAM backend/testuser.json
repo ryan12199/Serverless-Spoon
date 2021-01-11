@@ -1,6 +1,0 @@
-{
-    "id" : {"S" : "testuser"},
-    "password" : {"S" : "pass"},
-    "inventory" : { "SS" : ["apples", "rice" , "kiwi"]},
-    "recipes" : {"SS" : ["empty"]}
-}
