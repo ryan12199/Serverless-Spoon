@@ -49,7 +49,7 @@ function RecipePage() {
                 { recipeData.instructions &&
                     <div>
                         <h2>Instructions:</h2>
-                        <p>{recipeData.instructions}</p>
+                        <div> {ReactHtmlParser(recipeData.instructions)} </div>
                     </div>
                 }
 
