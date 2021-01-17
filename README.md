@@ -1,7 +1,7 @@
 # Serverless-Spoon
 
 
-Serverless Spoon is a meal-planning site written with a React.js frontend, and an AWS [Serverless Application Model](https://aws.amazon.com/serverless/sam/) backend. 
+Serverless Spoon is a meal-planning site written with a React.js frontend, and an AWS [Serverless Application Model](https://aws.amazon.com/serverless/sam/) backend. A demo is currently deployed on an EC2 instance [here](http://3.91.234.197:3000).
 
 Its current features are: 
 

@@ -17,6 +17,6 @@ To build and run the frontend, you need to have [npm](https://www.npmjs.com/) in
 - Clone the repository.  
 - `cd serverlessSpoon/frontend`.
 - Run `npm install`.
-- Run `npm start`
-- The site will be avilable locally on http://localhost:3000
+- Run `npm start`.
+- The site will be avilable locally on http://localhost:3000.
 

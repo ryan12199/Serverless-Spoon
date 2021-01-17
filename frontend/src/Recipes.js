@@ -123,7 +123,6 @@ function Recipes() {
           icon: <span className="glyphicon glyphicon-remove" />,
           callback: () => {
             if(window.confirm("Are you sure you want to remove \"" + row.title + "\" from your saved recipes?")){
-              alert("fine, deleting " + row.id);
               const deletePOST = functionSendDeleteRecipe(row.id);
             }
           }
