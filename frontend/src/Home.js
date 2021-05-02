@@ -13,38 +13,14 @@ require('bootstrap');
 
 
 function Home() {
-  const [cookies, setCookie] = useCookies(['name']);
   const [userId, setUserId] = useState('');
   const [userData, setUserData] = useState(null);
   const [macroValues, setMacroValues] = useState({ "calories": 0, "fat": 0, "carbs": 0, "protein": 0 });
   const [macroPercentages, setMacroPercentages] = useState({ "calories": 0, "fat": 0, "carbs": 0, "protein": 0 });
-  const [, updateState] = React.useState();
-  const forceUpdate = React.useCallback(() => updateState({}), []);
-  console.log("everything running")
 
-  // TODO: cookie argument not working
+  async function fetchUserData(userIdArg) {
 
-
-  async function fetchUserData(userIdArg = null) {
-
-
-    console.log("fetch running")
-    //only get called when cookies.id is defined 
-    console.log("cookie id")
-    console.log(cookies.id)
-    console.log("user id")
-    console.log(userId)
-    var id;
-    if(!userIdArg){
-      id = userId;
-    }
-    else{
-      id = userIdArg;
-    }
-    
-    if (cookies.id) {
-      id = cookies.id;
-    }
+    var id = userIdArg;
     const URL = `https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/getUser?id=${id}`;
     const result = await fetch(URL, {
       method: 'get',
@@ -66,21 +42,11 @@ function Home() {
     setUserData(body["user"]);
   }
 
-  useEffect(() => {
-    console.log("use effect running")
-    if (cookies.id) {
-      fetchUserData();
-    }
-  }, []);
-
   async function searchUser() {
-    setCookie("id", userId, {});
-    console.log("search cookie")
-    console.log(cookies.id)
-    fetchUserData();
+    fetchUserData(userId);
   }
 
-  if (cookies.id || userData) {
+  if (userData) {
     return (
       <div class="container">
         <div class="row justify-content-center">
@@ -104,22 +70,9 @@ function Home() {
       </div>
     )
   }
-  /*
-   {userData &&
-        <h2>
-          {JSON.stringify(userData)}
-        </h2>
-      }
-  */
-  const responseGoogle = (response) => {
-    console.log("response running")
-    console.log(response.googleId);
-    setUserId(response.googleId)
-    console.log("response userId")
-    console.log(userId)
 
+  const responseGoogle = (response) => {
     fetchUserData(response.googleId)
-    forceUpdate()
   }
 
   return (
@@ -132,12 +85,11 @@ function Home() {
       <GoogleLogin
         clientId="237051192708-qq3mafbbs63acrk8qu0sf09v6omucs30.apps.googleusercontent.com"
         buttonText="Login"
-        // isSignedIn={true}
+        isSignedIn={true}
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
         cookiePolicy={'single_host_origin'}
       />
-
     </div>
   );
 }
