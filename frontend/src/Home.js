@@ -8,7 +8,9 @@ import {
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useRouteMatch } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
 require('bootstrap');
+
 
 function Home() {
   const [cookies, setCookie] = useCookies(['name']);
@@ -16,10 +18,30 @@ function Home() {
   const [userData, setUserData] = useState(null);
   const [macroValues, setMacroValues] = useState({ "calories": 0, "fat": 0, "carbs": 0, "protein": 0 });
   const [macroPercentages, setMacroPercentages] = useState({ "calories": 0, "fat": 0, "carbs": 0, "protein": 0 });
+  const [, updateState] = React.useState();
+  const forceUpdate = React.useCallback(() => updateState({}), []);
+  console.log("everything running")
 
-  async function fetchUserData() {
+  // TODO: cookie argument not working
+
+
+  async function fetchUserData(userIdArg = null) {
+
+
+    console.log("fetch running")
     //only get called when cookies.id is defined 
-    var id = userId;
+    console.log("cookie id")
+    console.log(cookies.id)
+    console.log("user id")
+    console.log(userId)
+    var id;
+    if(!userIdArg){
+      id = userId;
+    }
+    else{
+      id = userIdArg;
+    }
+    
     if (cookies.id) {
       id = cookies.id;
     }
@@ -45,6 +67,7 @@ function Home() {
   }
 
   useEffect(() => {
+    console.log("use effect running")
     if (cookies.id) {
       fetchUserData();
     }
@@ -52,6 +75,8 @@ function Home() {
 
   async function searchUser() {
     setCookie("id", userId, {});
+    console.log("search cookie")
+    console.log(cookies.id)
     fetchUserData();
   }
 
@@ -61,36 +86,58 @@ function Home() {
         <div class="row justify-content-center">
           <div class="col">
             <h3 class="text-center">Calories:</h3>
-              <CircularProgressbar value={macroPercentages.calories} text={`${macroValues.calories} cals`} strokeWidth={5} />
+            <CircularProgressbar value={macroPercentages.calories} text={`${macroValues.calories} cals`} strokeWidth={5} />
           </div>
           <div class="col">
             <h3 class="text-center">Fat:</h3>
-              <CircularProgressbar value={macroPercentages.fat} text={`${macroValues.fat} g`} strokeWidth={5} />
+            <CircularProgressbar value={macroPercentages.fat} text={`${macroValues.fat} g`} strokeWidth={5} />
           </div>
           <div class="col">
             <h3 class="text-center">Carbs:</h3>
-              <CircularProgressbar value={macroPercentages.carbs} text={`${macroValues.carbs} g`} strokeWidth={5} />
+            <CircularProgressbar value={macroPercentages.carbs} text={`${macroValues.carbs} g`} strokeWidth={5} />
           </div>
           <div class="col">
             <h3 class="text-center">Protein:</h3>
-              <CircularProgressbar value={macroPercentages.protein} text={`${macroValues.protein} g`} strokeWidth={5} />
+            <CircularProgressbar value={macroPercentages.protein} text={`${macroValues.protein} g`} strokeWidth={5} />
           </div>
         </div>
       </div>
     )
   }
-  return (
-    <div>
-      <button onClick={() => searchUser()}>Search user</button>
-      <label>
-        ID:
-      <input type="ID" onChange={(event) => setUserId(event.target.value)} />
-      </label>
-      {userData &&
+  /*
+   {userData &&
         <h2>
           {JSON.stringify(userData)}
         </h2>
       }
+  */
+  const responseGoogle = (response) => {
+    console.log("response running")
+    console.log(response.googleId);
+    setUserId(response.googleId)
+    console.log("response userId")
+    console.log(userId)
+
+    fetchUserData(response.googleId)
+    forceUpdate()
+  }
+
+  return (
+    <div>
+      <button onClick={() => searchUser()}>Create user</button>
+      <label>
+        ID:
+      <input type="ID" onChange={(event) => setUserId(event.target.value)} />
+      </label>
+      <GoogleLogin
+        clientId="237051192708-qq3mafbbs63acrk8qu0sf09v6omucs30.apps.googleusercontent.com"
+        buttonText="Login"
+        // isSignedIn={true}
+        onSuccess={responseGoogle}
+        onFailure={responseGoogle}
+        cookiePolicy={'single_host_origin'}
+      />
+
     </div>
   );
 }
