@@ -4,18 +4,26 @@ import { useState, useEffect } from "react";
 import ReactDataGrid from "react-data-grid";
 import { ProgressBar } from "react-bootstrap";
 import ListGroup from 'react-bootstrap/ListGroup';
+import useModal from 'react-hooks-use-modal';
 
-const ProgressBarFormatter = ({ value }) => {
-  return <ProgressBar now={value} label={`${value}%`} width="50" height="50" />;
-};
+
+// TODO: rename to inventory dashboard 
 
 function Inventory() {
   const [cookies, setCookie] = useCookies(['name']);
   const [inventoryRows, setInventoryRows] = useState([]);
-  const [recipeSearchRows, setRecipeSearchRows] = useState([]);
+  // const [recipeSearchRows, setRecipeSearchRows] = useState([]);
   const [inventoryAddRowsHTML, setInventoryAddRowsHTML] = useState([]);
   const [inventoryAddRowsString, setInventoryAddRowsString] = useState([]);
+  const [Modal, open, close, isOpen] = useModal('root', {
+    preventScroll: true
+  });
 
+
+  useEffect(() => {
+    setInventoryAddRowsHTML([])
+    setInventoryAddRowsString([]);
+  }, [isOpen]); // Only re-run the effect if count changes
 
   async function deleteItemPOST(item) {
     const result = await fetch("https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/removeItems", {
@@ -61,40 +69,10 @@ function Inventory() {
     });
     setInventoryAddRowsHTML([]);
     setInventoryAddRowsString([]);
-    document.getElementById('itemInput').value = '';
+    if(document.getElementById('itemInput')){
+      document.getElementById('itemInput').value = '';
+    }
     setInventoryRows(newRows);
-  };
-
-  async function saveRecipePOST(recipeId) {
-    const result = await fetch("https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/addRecipes", {
-      method: 'POST',
-      body: JSON.stringify({ "id": cookies.id, recipeIds: [recipeId] }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-  };
-
-  async function searchRecipes() {
-    const URL = "https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/searchRecipeWithInventory";
-    const result = await fetch(URL, {
-      method: 'post',
-      body: JSON.stringify({ "id": cookies.id }),
-    })
-      .then(response => response.json())
-      .then((data) => {
-        if (data) {
-          var i;
-          var generatedRows = [];
-          var recipes = JSON.parse(data.recipes);
-          for (i = 0; i < recipes.length; i++) {
-            var recipe = recipes[i];
-            console.log("title " + recipe.title);
-            generatedRows.push({ title: recipe.title, id: recipe.id });
-          }
-          setRecipeSearchRows(generatedRows);
-        }
-      })
   };
 
   useEffect(() => {
@@ -116,11 +94,7 @@ function Inventory() {
   }, []);
 
   const inventoryColumns = [
-    { key: "title", name: "Title" },
-  ];
-
-  const recipeSearchColumns = [
-    { key: "title", name: "Title" }
+    { key: "title", name: "Ingredient name" },
   ];
 
   function getInventoryCellActions(column, row) {
@@ -129,35 +103,13 @@ function Inventory() {
         {
           icon: <span className="glyphicon glyphicon-remove" />,
           callback: () => {
-            if (window.confirm("Are you sure you want to remove \"" + row.title + "\" from your saved inventory?")) {
-              alert("fine, deleting " + row.title);
-              const deletePOST = deleteItemPOST(row.title);
-            }
+            const deletePOST = deleteItemPOST(row.title);
+            // if (window.confirm("Are you sure you want to remove \"" + row.title + "\" from your saved inventory?")) {
+            //   const deletePOST = deleteItemPOST(row.title);
+            // }
           }
         }
       ]);
-    }
-    return null;
-  }
-
-  function getSearchCellActions(column, row) {
-    if (column.key == "title") {
-      return ([
-        {
-          icon: <span className="glyphicon glyphicon-bookmark" />,
-          callback: () => {
-            alert(row.title + " was added to your saved recipes list");
-            saveRecipePOST(row.id);
-          }
-        },
-        {
-          icon: <span className="glyphicon glyphicon-info-sign" />,
-          callback: () => {
-            window.location = `../recipePage?recipeId=${row.id}`;
-          }
-        }
-      ]
-      );
     }
     return null;
   }
@@ -169,6 +121,7 @@ function Inventory() {
       var splitText = text.split(",");
       for (var i = 0; i < splitText.length; i++) {
         var item = splitText[i].trim();
+        if(item==""){ continue}
         newRowsHTML.push(<ListGroup.Item>{item}</ListGroup.Item>);
         newRowsString.push(item);
       }
@@ -177,13 +130,23 @@ function Inventory() {
     setInventoryAddRowsString(newRowsString);
   }
 
+  function handleKeyDown(event){
+    if (event.key === 'Enter'){
+      addItemsPOST();
+      close();
+    }
+  }
+
   var returnHTML = [];
   if (inventoryRows) {
     const headerRowHeight = 50;
-    const rowHeight = 50; 
-    const totalInventoryHeight = headerRowHeight + (rowHeight*inventoryRows.length);
+    const rowHeight = 50;
+    const totalInventoryHeight = headerRowHeight + (rowHeight * inventoryRows.length);
     return (<div>
-      <h1>Hello {cookies.id}, here is your inventory page</h1>
+      <div style={{display: "flex","justify-content": "space-between"}}>
+      <h1 style={{ "margin-top": "50px" }}> Current inventory</h1>
+      <button class="btn btn-primary" onClick={open} style={{"height" : "30px", "margin-top" : "55px"}}>Add items</button>
+      </div>
       <ReactDataGrid id="inventoryGrid"
         columns={inventoryColumns}
         rowGetter={i => inventoryRows[i]}
@@ -193,33 +156,21 @@ function Inventory() {
         rowHeight={rowHeight}
         getCellActions={getInventoryCellActions}
       />
-      <label>
-        Add Items:
-      <input type="text" id="itemInput" onChange={(event) => editInventoryAddRows(event.target.value)} />
+      <Modal style={{"margin-top" : "100px"}}>
+        <div style={{backgroundColor: "white", "padding" : "5px"}}>  
+        <div style={{display: "flex","justify-content": "space-between"}}>
+        <h2 style={{"margin-right" : "100px"}}>Add Items</h2>  
+        </div>
+        <h5 style={{"color" : "#403e3e"}}> Comma seperated, press enter to confirm</h5>  
+        <input style={{"width" : "100%"}} type="text" onKeyDown={(event) => handleKeyDown(event)} autocomplete="off" id="itemInput" onChange={(event) => editInventoryAddRows(event.target.value)} />
         {inventoryAddRowsHTML.length > 0 &&
           <ListGroup>
             {inventoryAddRowsHTML}
           </ListGroup>
         }
-      </label>
-      <button type="submit" onClick={() => addItemsPOST()} class="btn btn-primary">Add</button>
-      <h2>Here are recipies you can cook</h2>
-      <button onClick={() => searchRecipes()}>show recipes</button>
-      { recipeSearchRows.length > 0 &&
-        <ReactDataGrid id="recipeSearchGrid"
-          columns={recipeSearchColumns}
-          rowGetter={i => recipeSearchRows[i]}
-          rowsCount={recipeSearchRows.length}
-          getCellActions={getSearchCellActions}
-        />
-      }
-    </div>)
-  }
-  else {
-    return (<div>
-      <h2>Recipes Page</h2>
-      <h1>Hello {cookies.id}!</h1>
-      <h2>No data available</h2>
+        </div>
+      </Modal>
+
     </div>)
   }
 }
