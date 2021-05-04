@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Home from './Home';
 import Recipes from './Recipes';
 import Macros from './Macros';
-import Inventory  from './Inventory';
 import RecipePage  from './RecipePage';
 import { NoMatch } from './NoMatch';
 import { Layout } from './components/Layout';
@@ -18,7 +17,6 @@ class App extends Component {
           <Layout>
             <Switch>
               <Route exact path="/" component={Home} />
-              <Route path="/inventory" component={Inventory} />
               <Route path="/macros" component={Macros} />
               <Route path="/recipePage" component={RecipePage} />
               <Route path="/recipes" component={Recipes} />

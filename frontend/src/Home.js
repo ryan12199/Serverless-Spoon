@@ -9,8 +9,8 @@ import {
 import "react-circular-progressbar/dist/styles.css";
 import { useRouteMatch } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
-import Inventory  from './Inventory';
-import Recipes from './savedRecipesDashboard'
+import InventoryDashboard  from './InventoryDashboard';
+import SavedRecipesDashboard from './SavedRecipesDashboard'
 
 require('bootstrap');
 
@@ -75,8 +75,8 @@ function Home() {
         </div>
       </div>
       
-      <Inventory/>
-      <Recipes/>
+      <InventoryDashboard/>
+      <SavedRecipesDashboard/>
       </div>
     )
   }

@@ -77,8 +77,8 @@ function Macros() {
     if (data) {
         return (
             <div>
-                <h1>Macros Page</h1>
-                <h3>Add Macros</h3>
+                <h1 class="display-1 text-center" style={{"margin-bottom" : "30px"}}>Macro Tracking</h1>        
+                <h1>Track Daily Macros</h1>
                 <form>
                     <div className="form-group">
                         <label htmlFor="caloriesInput">Calories</label>
@@ -90,10 +90,10 @@ function Macros() {
                         <label htmlFor="proteinInput">Protein</label>
                         <input type="number" className="form-control" id="proteinInput" onChange={(event) => setAddProtein(event.target.value)} placeholder="Protein (in grams)" />
                     </div>
-                    <button class="btn btn-primary" onClick={() => addMacrosPOST()} type="button">Add macros</button>
+                    <button style ={{"margin-bottom" : "50px"}} class="btn btn-primary" onClick={() => addMacrosPOST()} type="button">Add Macros</button>
                 </form>
                 <form>
-                 <h3>Change Macros goals</h3>
+                 <h1>Change Macros goals</h1>
                     <div className="form-group">
                         <label htmlFor="caloriesGoalInput">Calorie Goals</label>
                         <input type="number" className="form-control" id="caloriesGoalInput" onChange={(event) => setCalorieGoalValue(event.target.value)} placeholder="Calories goal" />

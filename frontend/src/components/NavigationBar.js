@@ -31,17 +31,12 @@ export const NavigationBar = () => (
           </Nav.Item>
           <Nav.Item>
             <Nav.Link>
-              <Link to="/recipes">Recipes</Link>
+              <Link to="/recipes">Find Recipes</Link>
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
             <Nav.Link>
               <Link to="/macros">Macros</Link>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link>
-              <Link to="/inventory">Inventory</Link>
             </Nav.Link>
           </Nav.Item>
         </Nav>

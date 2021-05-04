@@ -9,7 +9,7 @@ import useModal from 'react-hooks-use-modal';
 
 // TODO: rename to inventory dashboard 
 
-function Inventory() {
+function InventoryDashboard() {
   const [cookies, setCookie] = useCookies(['name']);
   const [inventoryRows, setInventoryRows] = useState([]);
   // const [recipeSearchRows, setRecipeSearchRows] = useState([]);
@@ -156,11 +156,9 @@ function Inventory() {
         rowHeight={rowHeight}
         getCellActions={getInventoryCellActions}
       />
-      <Modal style={{"margin-top" : "100px"}}>
+      <Modal style={{"margin-top" : "100px"}}> 
         <div style={{backgroundColor: "white", "padding" : "5px"}}>  
-        <div style={{display: "flex","justify-content": "space-between"}}>
         <h2 style={{"margin-right" : "100px"}}>Add Items</h2>  
-        </div>
         <h5 style={{"color" : "#403e3e"}}> Comma seperated, press enter to confirm</h5>  
         <input style={{"width" : "100%"}} type="text" onKeyDown={(event) => handleKeyDown(event)} autocomplete="off" id="itemInput" onChange={(event) => editInventoryAddRows(event.target.value)} />
         {inventoryAddRowsHTML.length > 0 &&
@@ -175,4 +173,4 @@ function Inventory() {
   }
 }
 
-export default Inventory; 
+export default InventoryDashboard; 

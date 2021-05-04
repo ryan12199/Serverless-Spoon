@@ -9,14 +9,12 @@ const ProgressBarFormatter = ({ value }) => {
   return <ProgressBar now={value} label={`${value}%`} width="50" height="50" />;
 };
 
-function Inventory() {
+function RecipesWithIngridients() {
   const [cookies, setCookie] = useCookies(['name']);
   const [inventoryRows, setInventoryRows] = useState([]);
   const [recipeSearchRows, setRecipeSearchRows] = useState([]);
 
   
-
- 
   async function saveRecipePOST(recipeId) {
     const result = await fetch("https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/addRecipes", {
       method: 'POST',
@@ -96,18 +94,35 @@ function Inventory() {
     return null;
   }
 
+  const EmptyRowsView = () => {
+    console.log("empty")
+    const message = "Please click the button to show available recipes";
+    return (
+      <div
+        style={{ textAlign: "center", backgroundColor: "#ddd", padding: "100px", height:"100%" }}>
+        <h3>{message}</h3>
+      </div>
+    );
+  };
+
+  console.log(recipeSearchRows.length)
+
     return (<div>
-      <h2>Here are recipies you can cook</h2>
-      <button onClick={() => searchRecipes()}>show recipes</button>
-      { recipeSearchRows.length > 0 &&
-        <ReactDataGrid id="recipeSearchGrid"
+      <div style={{display: "flex","justify-content": "space-between"}}>
+      <h1 style={{ "margin-top": "50px" }}> Recipes you can cook right now</h1>
+      <button class="btn btn-primary" onClick={() => searchRecipes()} style={{"height" : "30px", "margin-top" : "55px"}}>Show recipes</button>
+      </div>
+      { <ReactDataGrid   
+          id="recipeSearchGrid"
           columns={recipeSearchColumns}
+          minHeight={250}
           rowGetter={i => recipeSearchRows[i]}
           rowsCount={recipeSearchRows.length}
+          emptyRowsView={EmptyRowsView}
           getCellActions={getSearchCellActions}
         />
       }
     </div>)
 }
 
-export default Inventory; 
+export default RecipesWithIngridients; 
