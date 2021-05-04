@@ -10,7 +10,7 @@ import "react-circular-progressbar/dist/styles.css";
 import { useRouteMatch } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 import InventoryDashboard  from './InventoryDashboard';
-import SavedRecipesDashboard from './SavedRecipesDashboard'
+import SavedRecipesDashboard from './savedRecipesDashboard'
 
 require('bootstrap');
 

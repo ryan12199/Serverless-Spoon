@@ -110,9 +110,6 @@ function Macros() {
     }
     else {
         return (<div>
-            <h2>Macros Page</h2>
-            <h1>Hello {cookies.id}!</h1>
-            <h2>No data available</h2>
         </div>)
     }
 }

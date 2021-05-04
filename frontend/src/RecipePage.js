@@ -39,17 +39,17 @@ function RecipePage() {
     if (recipeData) {
         return (
             <div>
-                <h1>{recipeData.title}</h1>
-                <h2>Will be ready in {recipeData.readyInMinutes} and serve {recipeData.servings} people</h2>
-                <div> {ReactHtmlParser(recipeData.summary)} </div>
-                <h2>Ingredients:</h2>
-                <ListGroup>
+                <h1 style={{"margin-bottom" : "50px"}} class="display-1 text-center">{recipeData.title}</h1> 
+                <h2 style={{"margin-bottom" : "20px"}}>Will be ready in {recipeData.readyInMinutes} and serve {recipeData.servings} people</h2>
+                <div style={{"font-size" : "150%", "margin-bottom" : "20px"}}> {ReactHtmlParser(recipeData.summary)} </div>
+                <h2 style={{"margin-bottom" : "20px"}}>Ingredients:</h2>
+                <ListGroup style={{"margin-bottom" : "20px", "font-size" : "120%"}}>
                     {ingridients}
                 </ListGroup>
                 { recipeData.instructions &&
                     <div>
-                        <h2>Instructions:</h2>
-                        <div> {ReactHtmlParser(recipeData.instructions)} </div>
+                        <h2 style={{"margin-bottom" : "20px"}}>Instructions:</h2>
+                        <div style={{"font-size" : "150%"}}> {ReactHtmlParser(recipeData.instructions)} </div>
                     </div>
                 }
 
