@@ -11,7 +11,6 @@ const ProgressBarFormatter = ({ value }) => {
 
 function RecipesWithIngridients() {
   const [cookies, setCookie] = useCookies(['name']);
-  const [inventoryRows, setInventoryRows] = useState([]);
   const [recipeSearchRows, setRecipeSearchRows] = useState([]);
 
   
@@ -48,21 +47,7 @@ function RecipesWithIngridients() {
   };
 
   useEffect(() => {
-    const getItemsURL = `https://qt6uy2yofd.execute-api.us-east-1.amazonaws.com/Prod/getItems?id=${cookies.id}`;
-    fetch(getItemsURL)
-      .then(response => response.json())
-      .then((data) => {
-        if (data) {
-          var i;
-          var generatedRows = [];
-          var inventory = data.inventory;
-          for (i = 0; i < inventory.length; i++) {
-            var item = inventory[i];
-            generatedRows.push({ title: item });
-          }
-          setInventoryRows(generatedRows);
-        }
-      })
+    searchRecipes();
   }, []);
 
 
@@ -110,7 +95,6 @@ function RecipesWithIngridients() {
     return (<div>
       <div style={{display: "flex","justify-content": "space-between"}}>
       <h1 style={{ "margin-top": "50px" }}> Recipes you can cook right now</h1>
-      <button class="btn btn-primary" onClick={() => searchRecipes()} style={{"height" : "30px", "margin-top" : "55px"}}>Show recipes</button>
       </div>
       { <ReactDataGrid   
           id="recipeSearchGrid"

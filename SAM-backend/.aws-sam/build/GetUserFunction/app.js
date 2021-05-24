@@ -56,7 +56,9 @@ exports.lambdaHandler = async (event, context) => {
         savedRecipeIds : [],
         inventory: [],
         macros: macrosJSON,
-        macroGoals : macroGoals
+        macroGoals : macroGoals,
+        inventoryRecipes: {"recipeList" : [], lastUpdateTime : 0},
+        inventoryLastUpdatedTime : 0,
       };
       const insertUserParams = {
         TableName: "Users",

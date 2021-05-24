@@ -73,11 +73,17 @@ exports.lambdaHandler = async (event, context) => {
         inventory.push(item);
       }
     }
-    updateInventory = getInventory;
-    updateInventory['UpdateExpression'] = "SET inventory = :array";
+    var updateInventory = getInventory;
+    var date = new Date();
+    var dateString = String(date.getTime());
+
+
+    updateInventory['UpdateExpression'] = "SET inventory = :array, inventoryLastUpdatedTime = :time";
     updateInventory['ExpressionAttributeValues'] = {
       ':array': inventory,
+      ':time' : dateString
     };
+
     const update = await documentClient.update(updateInventory).promise();
 
     var response = {

@@ -58,7 +58,24 @@ exports.lambdaHandler = async (event, context) => {
       };
       return response;
     }
+    
+    
+    var inventoryRecipesUpdateTime = getInventoryData["Item"]["inventoryRecipes"]["lastUpdateTime"];
+    var inventoryUpdateTime = getInventoryData["Item"]["inventoryLastUpdatedTime"];
+    if(inventoryRecipesUpdateTime>inventoryUpdateTime){
+      const returnList = getInventoryData["Item"]["inventoryRecipes"]["recipeList"];
+      return {
+        statusCode: 200,
+        headers : CORS,
+        body: JSON.stringify({"recipes" : returnList, "cached" : true})
+      };
+    }
+    
+  
+    
     var inventory = Object.values(getInventoryData["Item"]["inventory"]);
+    
+    
 
     let dataString = '';
     response = await new Promise((resolve, reject) => {
@@ -86,10 +103,23 @@ exports.lambdaHandler = async (event, context) => {
       });
     });
 
+  
+    var date = new Date();
+    var dateStr = String(date.getTime());  
+
+  
+    params['UpdateExpression'] = "SET inventoryRecipes.recipeList = :inventoryRecipes, inventoryRecipes.lastUpdateTime = :time";
+    params['ExpressionAttributeValues'] = {
+      ':inventoryRecipes': dataString,
+      ':time' : dateStr
+    }
+    const update = await documentClient.update(params).promise();
+
+
     return {
       statusCode: 200,
       headers : CORS,
-      body: JSON.stringify({"recipes" : dataString})
+      body: JSON.stringify({"recipes" : dataString, "cached" : false})
     };;
 
 
@@ -103,6 +133,5 @@ exports.lambdaHandler = async (event, context) => {
     };
   }
 
-  return response;
 };
 

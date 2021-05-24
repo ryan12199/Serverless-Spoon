@@ -10,7 +10,7 @@ const ProgressBarFormatter = ({ value }) => {
 };
 
 
-function Recipes() {
+function SavedRecipesDashboard() {
   const [cookies, setCookie] = useCookies(['name']);
   const [savedRecipesRows, setSavedRecipesRows] = useState([]);  
 
@@ -117,4 +117,4 @@ function Recipes() {
   }
 }
 
-export default Recipes; 
+export default SavedRecipesDashboard; 
