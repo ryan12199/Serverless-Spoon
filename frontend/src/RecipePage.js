@@ -16,7 +16,6 @@ function RecipePage() {
 
 
     useEffect(() => {
-        //https://api.spoonacular.com/recipes/782601/information?includeNutrition=true&apiKey=d41161c9f9e8416cb1f41f655ea69192
         const getRecipeURL = `https://api.spoonacular.com/recipes/${recipeId}/information?includeNutrition=false&apiKey=d41161c9f9e8416cb1f41f655ea69192`;
         fetch(getRecipeURL)
             .then(response => response.json())

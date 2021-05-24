@@ -1,14 +1,8 @@
 import React from 'react';
 import { useCookies } from 'react-cookie';
 import { useState, useEffect } from "react";
-import {
-    CircularProgressbar,
-    CircularProgressbarWithChildren,
-    buildStyles
-} from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import "react-bootstrap";
-import Form from 'react-bootstrap/Form';
 
 
 function Macros() {
@@ -18,7 +12,6 @@ function Macros() {
     const [addFatValue, setAddFat] = useState(0);
     const [addCarbsValue, setAddCarbs] = useState(0);
     const [addProteinValue, setAddProtein] = useState(0);
-
     const [calorieGoalValue, setCalorieGoalValue] = useState(0);
     const [fatGoalValue, setFatGoalValue] = useState(0);
     const [carbGoalValue, setCarbGoalValue] = useState(0);

@@ -5,10 +5,6 @@ import ReactDataGrid from "react-data-grid";
 import { Nav, ProgressBar } from "react-bootstrap";
 import RecipesWithIngridients from './RecipesWithIngridients'
 
-const ProgressBarFormatter = ({ value }) => {
-  return <ProgressBar now={value} label={`${value}%`} width="50" height="50" />;
-};
-
 
 function Recipes() {
   const [cookies, setCookie] = useCookies(['name']);
@@ -88,14 +84,6 @@ function Recipes() {
     setSavedRecipesRows(newRows);
   };
 
-  const savedRecipeColumns = [
-    { key: "title", name: "Title" },
-    { key: "cuisines", name: "Cuisines" },
-    { key: "diets", name: "Diets" },
-    { key: "cookingTime", name: "Cooking Time (Minutes)" },
-    { key: "healthscore", name: "Health Score", formatter: ProgressBarFormatter }
-  ];
-
   function getSearchCellActions(column, row) {
     if (column.key == "title") {
       return ([
@@ -123,13 +111,6 @@ function Recipes() {
 
 
   if (savedRecipesRows) {
-    const headerRowHeight = 50;
-    const rowHeight = 50;
-    const totalHeight = headerRowHeight + (rowHeight * savedRecipesRows.length);
-
-
-
-    console.log(`row count ${savedRecipesRows.length}`);
     return (
       <div>
         <RecipesWithIngridients />

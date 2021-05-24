@@ -3,11 +3,6 @@ import { useCookies } from 'react-cookie';
 import { useState, useEffect } from "react";
 import ReactDataGrid from "react-data-grid";
 import { ProgressBar } from "react-bootstrap";
-import ListGroup from 'react-bootstrap/ListGroup';
-
-const ProgressBarFormatter = ({ value }) => {
-  return <ProgressBar now={value} label={`${value}%`} width="50" height="50" />;
-};
 
 function RecipesWithIngridients() {
   const [cookies, setCookie] = useCookies(['name']);
@@ -81,7 +76,7 @@ function RecipesWithIngridients() {
 
   const EmptyRowsView = () => {
     console.log("empty")
-    const message = "Please click the button to show available recipes";
+    const message = "Loading Recipes";
     return (
       <div
         style={{ textAlign: "center", backgroundColor: "#ddd", padding: "100px", height:"100%" }}>

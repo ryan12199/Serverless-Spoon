@@ -12,7 +12,6 @@ import useModal from 'react-hooks-use-modal';
 function InventoryDashboard() {
   const [cookies, setCookie] = useCookies(['name']);
   const [inventoryRows, setInventoryRows] = useState([]);
-  // const [recipeSearchRows, setRecipeSearchRows] = useState([]);
   const [inventoryAddRowsHTML, setInventoryAddRowsHTML] = useState([]);
   const [inventoryAddRowsString, setInventoryAddRowsString] = useState([]);
   const [Modal, open, close, isOpen] = useModal('root', {
@@ -157,7 +156,7 @@ function InventoryDashboard() {
         getCellActions={getInventoryCellActions}
       />
       <Modal style={{"margin-top" : "100px"}}> 
-        <div style={{backgroundColor: "white", "padding" : "5px"}}>  
+        <div style={{backgroundColor: "white", "padding" : "2px"}}>  
         <h2 style={{"margin-right" : "100px"}}>Add Items</h2>  
         <h5 style={{"color" : "#403e3e"}}> Comma seperated, press enter to confirm</h5>  
         <input style={{"width" : "100%"}} type="text" onKeyDown={(event) => handleKeyDown(event)} autocomplete="off" id="itemInput" onChange={(event) => editInventoryAddRows(event.target.value)} />
