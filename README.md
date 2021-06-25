@@ -28,11 +28,11 @@ To build and deploy the project, you need to have:
 
 
 - Clone the repository.  
-- `cd serverlessSpoon/SAM-backend`
+- `cd Serverless-Spoon/SAM-backend`
 - Run `sam build && sam deploy`.
 - Inside your AWS management console, go to the API Gateway page and ensure you have an API group named `sam-app`.
 - Copy the value of the `ID` field for sam-app. 
 - `cd ../frontend`
-- Create a `.env` file in `serverlessSpoon/frontend ` with the variable `API_ENDPOINT=<sam-app ID>`.
+- Create a `.env` file in `Serverless-Spoon/frontend ` with the variable `API_ENDPOINT=<sam-app ID>`.
 - Run `npm install`.
 - Run `npm start`.
